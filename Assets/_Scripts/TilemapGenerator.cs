@@ -10,6 +10,8 @@ namespace _Scripts
          */
         public void GenerateTilemap(Cell[,] cellMap, Tilemap floorTilemap)
         {
+            floorTilemap.ClearAllTiles();
+            
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
 
             for (int x = 0; x < cellMap.GetLength(0); x++)
@@ -30,15 +32,17 @@ namespace _Scripts
                             tempTile.sprite.texture.SetPixel(0, 0, Color.green);
                             tempTile.sprite.texture.Apply();
                         }
-                        else
-                        {
-                            Debug.LogError("No indoor value: " + x + ", " + y);
-                        }
+                        // else
+                        // {
+                        //     Debug.LogError("No indoor value: " + x + ", " + y);
+                        // }
 
                         floorTilemap.SetTile(new Vector3Int(x, y, 0), tempTile);
                     }
                 }
             }
+            
+            floorTilemap.CompressBounds();
         }
 
         /**

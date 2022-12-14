@@ -1,6 +1,8 @@
 ﻿# ToDo
 
-- [ ] ToDo erstellen
+- [x] ToDo erstellen
+
+- [ ] Tile palettes erstellen
 
 - [ ] Ablauf mit Noise Funktion erstellen
 - [ ] Vergleichen, ob Noise oder Random besser geeignet sind

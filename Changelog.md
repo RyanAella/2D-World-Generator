@@ -1,5 +1,16 @@
 ﻿# Changelog
 
+
+## [0.1.0] - 2022-12-14
+## Added
+- Map Generator Script
+- Cell Map Generator
+  - Pseudo Random
+  - Open Simplex Noise
+  - Perlin Noise
+- CellDebugger
+- Tilemap Generator
+
 ## [0.0.1] - 2022-12-08
 ## Added
 - Cell class
