@@ -1,6 +1,14 @@
 ﻿# Changelog
 
 
+## [0.2.0] - 2022-12-15
+## Added
+- indoor/outdoor Lists
+
+## Changed
+- Value Generation in one Script
+
+
 ## [0.1.0] - 2022-12-14
 ## Added
 - Map Generator Script

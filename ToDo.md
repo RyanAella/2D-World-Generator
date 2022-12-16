@@ -4,6 +4,9 @@
 
 - [ ] Tile palettes erstellen
 
+- [ ] Cell
+  - [ ] Tile generieren
+
 - [ ] Ablauf mit Noise Funktion erstellen
 - [ ] Vergleichen, ob Noise oder Random besser geeignet sind
 
