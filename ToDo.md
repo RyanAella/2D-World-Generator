@@ -7,13 +7,14 @@
 - [ ] Cell
   - [ ] Tile generieren
 
-- [ ] Ablauf mit Noise Funktion erstellen
+- [ ] Ablauf mit Pseudo Random erstellen
+- [x] Ablauf mit Noise Funktion erstellen
 - [ ] Vergleichen, ob Noise oder Random besser geeignet sind
 
 - [ ] Für jede Zelle Terrain Type bestimmen
-  - [ ] **Meadows**
-  - [ ] Woods
-  - [ ] **StoneCave**
+  - [x] Meadows
+  - [x] Woods
+  - [x] StoneCave
   - [ ] Settlement
     - [ ] Village
     - [ ] Fields

@@ -47,7 +47,7 @@ namespace _Scripts.CellGeneration
 
     public class CellAsset
     {
-        public AssetType Asset;
+        public AssetType Type;
 
         public bool Collidable = false;
         
@@ -55,8 +55,8 @@ namespace _Scripts.CellGeneration
         {
             None,
             Rock,
-            // Tree,
-            // Bush,
+            Tree,
+            Bush,
         }
     }
 }

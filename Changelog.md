@@ -1,6 +1,13 @@
 ﻿# Changelog
 
 
+## [0.3.0] - 2022-12-16 
+## Added
+- Bioms and Assets for cells
+- Assets can be collidable
+- Different Bioms for indoor and outdoor cells
+
+
 ## [0.2.0] - 2022-12-15
 ## Added
 - indoor/outdoor Lists

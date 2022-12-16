@@ -13,115 +13,38 @@ namespace _Scripts
         [SerializeField] private Vector2Int resolution = new(128, 72);
 
         // private CellDebugger _debugger;
-        private Cell[,] _cellMap;
-        private List<Cell> _indoorCells;
-        private List<Cell> _outdoorCells;
-        
-        [SerializeField] private TilemapGenerator _tilemapGenerator;
 
-        private bool _scriptLoaded = false;
+        private CellMapGenerator _cellMapGenerator;
+        [SerializeField] private TilemapGenerator tilemapGenerator;
+
+        // private bool _scriptLoaded = false;
 
         // Settings for the layer determining if a tile is in or outdoors
-        [SerializeField] private ValueGenerationSettings BaseLayerSettings;
+        [SerializeField] private ValueGenerationSettings baseLayerSettings;
         
         // Settings for determining if an indoor tile is massive rock or a cavity
-        [SerializeField] private ValueGenerationSettings MountainLayerSettings;
+        [SerializeField] private ValueGenerationSettings mountainLayerSettings;
 
         // Settings for determining if an outdoor tile is meadows or woods
-        [SerializeField] private ValueGenerationSettings OutdoorBiomeSettings;
+        [SerializeField] private ValueGenerationSettings outdoorBiomSettings;
         
         void Start()
         {
             // initialization
-            _tilemapGenerator.Setup();
-            _cellMap = new Cell[resolution.x, resolution.y];
-            _indoorCells = new List<Cell>();
-            _outdoorCells = new List<Cell>();
+            _cellMapGenerator = new CellMapGenerator();
+            tilemapGenerator.Setup();
 
-            // Generate CellMap for indoor/outdoor
-            for (int x = 0; x < resolution.x; x++)
-            {
-                for (int y = 0; y < resolution.y; y++)
-                {
-                    Cell cell = new Cell();
-                    cell.CellIndex = new Vector2Int(x, y);
-
-                    var val = ValueGenerator.Evaluate(x, y, BaseLayerSettings);
-
-                    if (val == 1)
-                    {
-                        cell.Indoors = true;
-                        _indoorCells.Add(cell);
-                    }
-                    else
-                    {
-                        cell.Indoors = false;
-                        _outdoorCells.Add(cell);
-                    }
-
-                    _cellMap[x, y] = cell;
-                }
-            }
-            
-            // // Get the values of the neighbours
-            // foreach (var cell in _cellMap)
-            // {
-            //     // get the coordinates of all 8 neighbours
-            //     for (int x = -1; x <= 1; x++)
-            //     {
-            //         for (int y = -1; y <= 1; y++)
-            //         {
-            //             int xPos = cell.CellIndex.x + x;
-            //             int yPos = cell.CellIndex.y + y;
-            //
-            //             // skip the incoming cell, and cell coordinates that are not in the map
-            //             if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
-            //                 xPos >= resolution.x || yPos >= resolution.y)
-            //             {
-            //                 continue;
-            //             }
-            //
-            //             bool neighbourVal = _cellMap[xPos, yPos].Indoors;
-            //
-            //             if (neighbourVal != cell.Indoors)
-            //             {
-            //                 // cell.isWall = true;
-            //             }
-            //
-            //             cell.Neighbours.Add(_cellMap[xPos, yPos]);
-            //         }
-            //     }
-            // }
-            
-            // mountain layer generation
-            foreach (var cell in _indoorCells)
-            {
-                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, MountainLayerSettings);
-
-                if (val == 1)
-                {
-                    // cell is massive rock
-                    cell.Asset = new CellAsset();
-                    cell.Asset.Asset = CellAsset.AssetType.Rock;
-                    cell.Asset.Collidable = true;
-                }
-                else
-                {
-                    // cell is a cavity
-                    cell.Biom = Biom.Cave;
-                    cell.Asset.Asset = CellAsset.AssetType.None;
-                    cell.Asset.Collidable = false;
-                }
-            }
+            // cell map generation
+            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings, outdoorBiomSettings);
 
             // tilemap generation
-            _tilemapGenerator.GenerateTilemap(_cellMap);
+            tilemapGenerator.GenerateTilemap(cellMap);
 
             // _debugger = new CellDebugger(randomGenerator);
             // _debugger.PlotNeighbours(_cellMap[126, 70]);
             // _debugger.PlotNeighbours(_cellMap[15,8]);
 
-            _scriptLoaded = true;
+            // _scriptLoaded = true;
         }
 
         // private void OnValidate()
