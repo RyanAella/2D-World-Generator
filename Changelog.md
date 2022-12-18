@@ -1,6 +1,12 @@
 ﻿# Changelog
 
 
+## [0.4.0] - 2022-12-18
+## Added
+- Decided against Pseudo Random
+- Comments
+
+
 ## [0.3.0] - 2022-12-16 
 ## Added
 - Bioms and Assets for cells

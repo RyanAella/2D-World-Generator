@@ -3,13 +3,38 @@ using UnityEngine;
 
 namespace _Scripts.CellGeneration
 {
+    /**
+     * The Bioms of the map.
+     */
     public enum Biom
     {
         Meadows,
         Woods,
         Cave,
     }
+    
+    /**
+     * The Assets a cell can hold and if they are collidable or interactable.
+     */
+    public class CellAsset
+    {
+        public AssetType Type;
 
+        public bool Collidable = false;
+        public bool Interactable = false;
+        
+        public enum AssetType
+        {
+            None,
+            Rock,
+            Tree,
+            Bush,
+        }
+    }
+
+    /**
+     * This class holds information about the Biom, the Asset and the neighbouring cells.
+     */
     public class Cell
     {
         // general
@@ -42,21 +67,6 @@ namespace _Scripts.CellGeneration
         {
             CellIndex = cellPos;
             Neighbours = new List<Cell>();
-        }
-    }
-
-    public class CellAsset
-    {
-        public AssetType Type;
-
-        public bool Collidable = false;
-        
-        public enum AssetType
-        {
-            None,
-            Rock,
-            Tree,
-            Bush,
         }
     }
 }

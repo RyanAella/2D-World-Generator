@@ -4,10 +4,12 @@
 
 - [ ] Tile palettes erstellen
 
-- [ ] Cell
-  - [ ] Tile generieren
+- [ ] Different Asset Types on different Tilemaps
 
-- [ ] Ablauf mit Pseudo Random erstellen
+- [x] Cell
+  - [x] Tile generieren
+
+- [-] Ablauf mit Pseudo Random erstellen
 - [x] Ablauf mit Noise Funktion erstellen
 - [ ] Vergleichen, ob Noise oder Random besser geeignet sind
 

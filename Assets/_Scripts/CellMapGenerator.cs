@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using _Scripts.CellGeneration;
 using _Scripts.ValueGeneration;
@@ -6,6 +5,12 @@ using UnityEngine;
 
 namespace _Scripts
 {
+    /**
+     * This class generates the cell map.
+     * First: The Base Layer (in-/outdoors).
+     * Second: The Mountain Layers and its Bioms.
+     * Third: The Open Terrain Layer and its Bioms.
+     */
     public class CellMapGenerator
     {
         private Cell[,] _cellMap;
@@ -18,18 +23,26 @@ namespace _Scripts
             _cellMap = new Cell[resolution.x, resolution.y];
             _indoorCells = new List<Cell>();
             _outdoorCells = new List<Cell>();
-            
-            System.Random prng = new System.Random(outdoorBiomSetting.GetSeed().GetHashCode());
-            Debug.Log("outdoorBiomSetting.GetSeed().GetHashCode(): " + outdoorBiomSetting.GetSeed().GetHashCode());
 
+            // Needed to create the Wood Biom (outdoors)
+            System.Random prng = new System.Random(outdoorBiomSetting.GetSeed().GetHashCode());
+
+            // if (baseLayerSettings.noiseType == NoiseType.PseudoRandom)
+            // {
+            //
+            //     // Can be generated with Open Simplex Noise, Perlin Noise
+            //     _cellMap = PseudoRandomCellMapGenerator.Evaluate(resolution, baseLayerSettings, out _indoorCells, out _outdoorCells);
+            // }
+            // else
+            // {
             // Generate CellMap for indoor/outdoor
             for (int x = 0; x < resolution.x; x++)
             {
                 for (int y = 0; y < resolution.y; y++)
                 {
                     Cell cell = new Cell(new Vector2Int(x, y));
-                    // cell.CellIndex = new Vector2Int(x, y);
 
+                    // Can be generated with Open Simplex Noise, Perlin Noise
                     var val = ValueGenerator.Evaluate(x, y, baseLayerSettings);
 
                     if (val == 1)
@@ -46,6 +59,8 @@ namespace _Scripts
                     _cellMap[x, y] = cell;
                 }
             }
+            // }
+
 
             // Get the values of the neighbours
             // If one or more neighbours is different from the current cell, make the current cell a wall
@@ -85,6 +100,7 @@ namespace _Scripts
                 // all indoor cells are currently cave
                 cell.Biom = Biom.Cave;
 
+                // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
 
                 CellAsset asset = new CellAsset();
@@ -108,6 +124,7 @@ namespace _Scripts
             // open terrain layer generation
             foreach (var cell in _outdoorCells)
             {
+                // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
 
                 CellAsset asset = new CellAsset();
@@ -124,18 +141,20 @@ namespace _Scripts
                     cell.Biom = Biom.Woods;
 
                     var value = prng.Next(11);
-                    Debug.Log("prng.Next(0, 11): " + value);
-                    
+
+                    // 50% Trees
                     if (value <= 5)
                     {
                         asset.Collidable = true;
                         asset.Type = CellAsset.AssetType.Tree;
                     }
+                    // 30% Bushes
                     else if (value <= 8)
                     {
                         asset.Collidable = true;
                         asset.Type = CellAsset.AssetType.Bush;
                     }
+                    // 20% empty space
                     else
                     {
                         asset.Collidable = false;

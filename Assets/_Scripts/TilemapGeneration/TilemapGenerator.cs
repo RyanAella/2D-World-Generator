@@ -5,25 +5,24 @@ using UnityEngine.Tilemaps;
 
 namespace _Scripts.TilemapGeneration
 {
+    /**
+     * This class generates the tilemaps
+     */
     [Serializable]
     public class TilemapGenerator
     {
-        [SerializeField] private GameObject floorLayer; // floor base level showing biom color
-        private Tilemap _floorTileMap;
+        [SerializeField] private GameObject biomLayer; // floor base level showing biom color
+        private Tilemap _biomTilemap;
         [SerializeField] private GameObject mountainLayer; // tilemap containing either nothing, or solid rock
-        private Tilemap _mountainTileMap;
+        private Tilemap _mountainTilemap;
         [SerializeField] private GameObject openTerrainLayer; // tilemap containing either trees, or grass
-
-        private Tilemap _openTerrainTileMap;
-        // [SerializeField] private GameObject TreeLayer;    // tilemap containing all trees
-        // [SerializeField] private GameObject BushLayer;    // tilemap containing all bushes
-
+        private Tilemap _openTerrainTilemap;
 
         public void Setup()
         {
-            _floorTileMap = floorLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _mountainTileMap = mountainLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _openTerrainTileMap = openTerrainLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _biomTilemap = biomLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _mountainTilemap = mountainLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _openTerrainTilemap = openTerrainLayer.GetComponent(typeof(Tilemap)) as Tilemap;
         }
 
 
@@ -32,9 +31,9 @@ namespace _Scripts.TilemapGeneration
          */
         public void GenerateTilemap(Cell[,] cellMap)
         {
-            _floorTileMap.ClearAllTiles();
-            _mountainTileMap.ClearAllTiles();
-            _openTerrainTileMap.ClearAllTiles();
+            _biomTilemap.ClearAllTiles();
+            _mountainTilemap.ClearAllTiles();
+            _openTerrainTilemap.ClearAllTiles();
 
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
 
@@ -47,46 +46,17 @@ namespace _Scripts.TilemapGeneration
                 }
             }
 
-            // generate base/floor tilemap
-            // Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
-            //
-            // for (int x = 0; x < cellMap.GetLength(0); x++)
-            // {
-            //     for (int y = 0; y < cellMap.GetLength(1); y++)
-            //     {
-            //         if (tempTile != null)
-            //         {
-            //             tempTile.sprite = CreateSprite();
-            //
-            //             if (cellMap[x, y].Indoors)
-            //             {
-            //                 tempTile.sprite.texture.SetPixel(0, 0, Color.gray);
-            //                 
-            //                 tempTile.sprite.texture.Apply();
-            //             }
-            //             else if (!cellMap[x, y].Indoors)
-            //             {
-            //                 tempTile.sprite.texture.SetPixel(0, 0, Color.green);
-            //                 tempTile.sprite.texture.Apply();
-            //             }
-            //             // else
-            //             // {
-            //             //     Debug.LogError("No indoor value: " + x + ", " + y);
-            //             // }
-            //
-            //             _floorTileMap.SetTile(new Vector3Int(x, y, 0), tempTile);
-            //         }
-            //     }
-            // }
-
-            _floorTileMap.CompressBounds();
-            _mountainTileMap.CompressBounds();
-            _openTerrainTileMap.CompressBounds();
-            floorLayer.SetActive(true);
+            _biomTilemap.CompressBounds();
+            _mountainTilemap.CompressBounds();
+            _openTerrainTilemap.CompressBounds();
+            biomLayer.SetActive(true);
             mountainLayer.SetActive(true);
             openTerrainLayer.SetActive(true);
         }
 
+        /**
+         * Generate the tiles
+         */
         private void GenerateTiles(Cell cell, Tile tempTile)
         {
             GenerateBaseTile(cell, tempTile);
@@ -101,6 +71,10 @@ namespace _Scripts.TilemapGeneration
             }
         }
 
+        /**
+         * Generate the base tiles (the bioms).
+         * There are no Assets on these tiles.
+         */
         private void GenerateBaseTile(Cell cell, Tile tempTile)
         {
             // foreach cell create floor tile based on biom
@@ -126,9 +100,13 @@ namespace _Scripts.TilemapGeneration
                 tempTile.sprite.texture.Apply();
             }
 
-            _floorTileMap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+            _biomTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
         }
 
+        /**
+         * Generate the tiles that belong to the mountain.
+         * These tiles can have Assets or not.
+         */
         private void GenerateMountainTile(Cell cell, Tile tempTile)
         {
             // foreach indoor cell create asset tile if such is rock
@@ -139,10 +117,14 @@ namespace _Scripts.TilemapGeneration
                 tempTile.sprite = CreateSprite(2);
                 tempTile.sprite.texture.SetPixel(0, 0, Color.black);
                 tempTile.sprite.texture.Apply();
-                _mountainTileMap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                _mountainTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
             }
         }
 
+        /**
+         * Generate the tiles that belong to the open terrain (the outside).
+         * These tiles can have Assets or not.
+         */
         private void GenerateOpenTerrainTile(Cell cell, Tile tempTile)
         {
             // foreach indoor cell create asset tile if such is tree
@@ -153,14 +135,14 @@ namespace _Scripts.TilemapGeneration
                 tempTile.sprite = CreateSprite(2);
                 tempTile.sprite.texture.SetPixel(0, 0, Color.red);
                 tempTile.sprite.texture.Apply();
-                _openTerrainTileMap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                _openTerrainTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
             }
             else if (cell.Asset.Type == CellAsset.AssetType.Bush)
             {
                 tempTile.sprite = CreateSprite(2);
                 tempTile.sprite.texture.SetPixel(0, 0, Color.magenta);
                 tempTile.sprite.texture.Apply();
-                _openTerrainTileMap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                _openTerrainTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
             }
         }
 
