@@ -20,6 +20,7 @@ namespace _Scripts.CellGeneration
     {
         public AssetType Type;
 
+        // Needs to be in constructors???
         public bool Collidable = false;
         public bool Interactable = false;
         
