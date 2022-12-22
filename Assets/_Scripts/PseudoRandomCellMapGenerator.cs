@@ -12,15 +12,17 @@ namespace _Scripts
         private List<Cell> _indoorCells;
         private List<Cell> _outdoorCells;
 
-        public static Cell[,] Evaluate(Vector2Int resolution, ValueGenerationSettings settings, out List<Cell> indoorCells, out List<Cell> outdoorCells)
+        public static Cell[,] GenerateCellMap(Vector2Int resolution, ValueGenerationSettings baseLayerSettings,
+            ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSettings,
+            out List<Cell> indoorCells, out List<Cell> outdoorCells)
         {
             Cell[,] cellMap = new Cell[resolution.x, resolution.y];
-            
-            System.Random prng = new System.Random(settings.GetSeed().GetHashCode());
 
-            if (settings.useRandomSeed)
+            System.Random prng = new System.Random(baseLayerSettings.GetSeed().GetHashCode());
+
+            if (baseLayerSettings.useRandomSeed)
             {
-                settings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
+                baseLayerSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
             }
 
             for (int x = 0; x < resolution.x; x++)
@@ -29,7 +31,7 @@ namespace _Scripts
                 {
                     Cell cell = new Cell(x, y);
 
-                    if (prng.Next(101) <= settings.thresholdPercentage)
+                    if (prng.Next(101) <= baseLayerSettings.thresholdPercentage)
                     {
                         cell.Indoors = true;
                     }
@@ -42,9 +44,9 @@ namespace _Scripts
                 }
             }
 
-            cellMap = SmoothCellMap(cellMap, settings, resolution);
+            cellMap = SmoothCellMap(cellMap, baseLayerSettings, resolution);
             GetInAndOutdoorCells(cellMap, out indoorCells, out outdoorCells, resolution);
-            
+
             return cellMap;
         }
 
@@ -136,22 +138,23 @@ namespace _Scripts
             return similarNeighbourCount;
         }
 
-        private static void GetInAndOutdoorCells(Cell[,] cellMap, out  List<Cell> indoorCells, out List<Cell> outdoorCells, Vector2Int resolution)
+        private static void GetInAndOutdoorCells(Cell[,] cellMap, out List<Cell> indoorCells,
+            out List<Cell> outdoorCells, Vector2Int resolution)
         {
             indoorCells = new List<Cell>();
             outdoorCells = new List<Cell>();
-            
+
             for (int x = 0; x < resolution.x; x++)
             {
                 for (int y = 0; y < resolution.y; y++)
                 {
-                    if (cellMap[x,y].Indoors)
+                    if (cellMap[x, y].Indoors)
                     {
-                        indoorCells.Add(cellMap[x,y]);
+                        indoorCells.Add(cellMap[x, y]);
                     }
                     else
                     {
-                        outdoorCells.Add(cellMap[x,y]);
+                        outdoorCells.Add(cellMap[x, y]);
                     }
                 }
             }

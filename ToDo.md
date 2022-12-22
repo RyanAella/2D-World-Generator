@@ -1,13 +1,7 @@
 ﻿# ToDo Next
 
 - [ ] **Dokumentation**
-  - [ ] Wie angefangen?
-  - [ ] Warum kein Pseudo Random mehr?
 - [ ] Different Asset Types on different Tilemaps
-- [ ] Cell
-  - [ ] Constructor überarbeiten?
-- [ ] Gesamten Ablauf mit Pseudo Random erstellen
-  - [ ] Smoothen
 - [ ] Sprite Prefabs? Tile Prefabs? Tile Palettes?
 - [ ] Weitere Assets bestimmen und auf richtiger Tilemap erzeugen (+ Funktion ? )
   - [ ] none
@@ -16,7 +10,6 @@
     - [ ] is trigger false - collission (abprallen)
   - [ ] interactable
   - [ ] collidable interactable ?
-  - [ ] **Prozentsätze für Bäume usw als Nutzereingabe**
 - [ ] Hide in Inspektor: 
   - [ ] SmoothSteps wenn Gradient Noise aktiv ist
 
@@ -25,15 +18,19 @@
 
 - [x] ToDo erstellen
 
+- [ ] **Dokumentation**
+  - [x] Wie angefangen? (18.12.2022)
+  - [x] Warum kein Pseudo Random mehr? (18.12.2022)
+
 - [ ] Sprite Prefabs? Tile Prefabs? Tile Palettes?
 
 - [ ] Different Asset Types on different Tilemaps
 
-- [ ] Cell
-  - [ ] Constructor überarbeiten?
+- [x] Cell (22.12.2022)
+  - [x] Constructor überarbeiten? - Nein (22.12.2022)
 
-- [ ] Gesamten Ablauf mit Pseudo Random erstellen
-  - [ ] Smoothen
+- [-] Gesamten Ablauf mit Pseudo Random erstellen (22.12.2022)
+  - [-] Smoothen (22.12.2022)
 - [x] Ablauf mit Noise Funktion erstellen
 - [ ] Vergleichen, ob Noise oder Random besser geeignet sind
 
@@ -47,9 +44,11 @@
     - [ ] Village
     - [ ] Fields
   - [ ] Water
-- [ ] Weitere Assets bestimmen und auf richtiger Tilemap erzeugen, + Funktion
+- [ ] Weitere Assets bestimmen und auf richtiger Tilemap erzeugen (+ Funktion ? )
   - [ ] none
   - [ ] collidable
+    - [ ] is trigger true - durchlaufen
+    - [ ] is trigger false - collission (abprallen)
   - [ ] interactable
-  - [ ] collidable interactable
-  - [ ] ...
+  - [ ] collidable interactable ?
+  - [x] Prozentsätze für Bäume usw als Nutzereingabe  (22.12.2022)

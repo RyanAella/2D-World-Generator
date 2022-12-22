@@ -1,10 +1,24 @@
+using System;
 using System.Collections.Generic;
 using _Scripts.CellGeneration;
 using _Scripts.ValueGeneration;
+using UnityEditor;
 using UnityEngine;
 
 namespace _Scripts
 {
+    /**
+     * This class stores the parameters for each generation step.
+     */
+    [Serializable] // With this it can be showed in the Inspector
+    public class AssetGenerationSettings
+    {
+        // trees, bushes
+        [Range(1, 100)] public int treePercentage;
+        [Range(1, 100)] public int bushPercentage;
+        [Range(1, 100)] public int grasPercentage;
+    }
+
     /**
      * This class generates the cell map.
      * First: The Base Layer (in-/outdoors).
@@ -18,7 +32,8 @@ namespace _Scripts
         private List<Cell> _outdoorCells;
 
         public Cell[,] GenerateCellMap(Vector2Int resolution, ValueGenerationSettings baseLayerSettings,
-            ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSetting)
+            ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSetting,
+            AssetGenerationSettings assetGenerationSettings)
         {
             _cellMap = new Cell[resolution.x, resolution.y];
             _indoorCells = new List<Cell>();
@@ -140,25 +155,32 @@ namespace _Scripts
                     // cell is Woods
                     cell.Biom = Biom.Woods;
 
-                    var value = prng.Next(11);
+                    var value = prng.Next(101);
+                    var trees = assetGenerationSettings.treePercentage;
+                    var bushes = assetGenerationSettings.bushPercentage;
+                    var gras = assetGenerationSettings.grasPercentage;
 
-                    // 50% Trees
-                    if (value <= 5)
+                    if (trees + bushes + gras > 100)
                     {
-                        asset.Collidable = true;
-                        asset.Type = CellAsset.AssetType.Tree;
+                        Debug.LogError("More than 100% Trees and Bushes.");
                     }
-                    // 30% Bushes
-                    else if (value <= 8)
-                    {
-                        asset.Collidable = true;
-                        asset.Type = CellAsset.AssetType.Bush;
-                    }
-                    // 20% empty space
                     else
                     {
-                        asset.Collidable = false;
-                        asset.Type = CellAsset.AssetType.None;
+                        if (value <= trees)
+                        {
+                            asset.Collidable = true;
+                            asset.Type = CellAsset.AssetType.Tree;
+                        }
+                        else if (value <= trees + bushes)
+                        {
+                            asset.Collidable = true;
+                            asset.Type = CellAsset.AssetType.Bush;
+                        }
+                        else if (value <= trees + bushes + gras)
+                        {
+                            asset.Collidable = false;
+                            asset.Type = CellAsset.AssetType.None;
+                        }
                     }
                 }
 

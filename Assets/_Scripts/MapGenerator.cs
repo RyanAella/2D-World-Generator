@@ -25,6 +25,9 @@ namespace _Scripts
 
         // Settings for determining if an outdoor tile is meadows or woods
         [SerializeField] private ValueGenerationSettings outdoorBiomSettings;
+        
+        // Settings for determining how many percent of woods are trees, bushes and gras
+        [SerializeField] private AssetGenerationSettings assetGenerationSettings;
 
         // For the use of OnValidate()
         private bool _scriptLoaded = false;
@@ -39,8 +42,9 @@ namespace _Scripts
             tilemapGenerator.Setup();
 
             // cell map generation
-            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-                outdoorBiomSettings);
+            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
+                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+
 
             // tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
@@ -62,7 +66,7 @@ namespace _Scripts
 
             // cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-                outdoorBiomSettings);
+                outdoorBiomSettings, assetGenerationSettings);
 
             // tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);

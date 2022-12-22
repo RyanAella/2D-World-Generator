@@ -1,6 +1,11 @@
 ﻿# Changelog
 
 
+## [0.5.0] - 2022-12-22
+## Added
+- Percentages for trees, bushes and grass as fields in inspector
+
+
 ## [0.4.0] - 2022-12-18
 ## Added
 - Decided against Pseudo Random
