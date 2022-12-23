@@ -45,7 +45,6 @@ namespace _Scripts
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
                 mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
 
-
             // tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 

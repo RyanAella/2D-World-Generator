@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 namespace _Scripts.CellGeneration
@@ -19,9 +20,10 @@ namespace _Scripts.CellGeneration
     public class CellAsset
     {
         public AssetType Type;
-        
-        public bool Collidable = false;
-        public bool Interactable = false;
+
+        private bool _collidable = false;
+        private bool _interactable = false;
+        private bool _collidableInteractable = false;
         
         public enum AssetType
         {
@@ -29,6 +31,37 @@ namespace _Scripts.CellGeneration
             Rock,
             Tree,
             Bush,
+        }
+
+        public CellAsset(AssetType type)
+        {
+            switch (type)
+            {
+                case AssetType.None:
+                    Type = type;
+                    _collidable = false;
+                    _interactable = false;
+                    _collidableInteractable = false;
+                    break;
+                case AssetType.Rock:
+                    Type = type;
+                    _collidable = false;
+                    _interactable = false;
+                    _collidableInteractable = true;
+                    break;
+                case AssetType.Tree:
+                    Type = type;
+                    _collidable = false;
+                    _interactable = false;
+                    _collidableInteractable = true;
+                    break;
+                case AssetType.Bush:
+                    Type = type;
+                    _collidable = false;
+                    _interactable = false;
+                    _collidableInteractable = false;
+                    break;
+            }
         }
     }
 
@@ -44,7 +77,7 @@ namespace _Scripts.CellGeneration
         // biom
         public Biom Biom;
 
-        // collision
+        // asset
         public CellAsset Asset; // e.g. a tree stands on this cell
 
         // neighbours
@@ -55,18 +88,21 @@ namespace _Scripts.CellGeneration
             Debug.LogWarning("Cell created without index!");
             CellIndex = new Vector2Int();
             Neighbours = new List<Cell>();
+            Asset = new CellAsset(CellAsset.AssetType.None);
         }
 
         public Cell(int x, int y)
         {
             CellIndex = new Vector2Int(x, y);
             Neighbours = new List<Cell>();
+            Asset = new CellAsset(CellAsset.AssetType.None);
         }
 
         public Cell(Vector2Int cellPos)
         {
             CellIndex = cellPos;
             Neighbours = new List<Cell>();
+            Asset = new CellAsset(CellAsset.AssetType.None);
         }
     }
 }

@@ -118,22 +118,11 @@ namespace _Scripts
                 // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
 
-                CellAsset asset = new CellAsset();
-
                 if (val == 1)
                 {
                     // cell is massive rock
-                    asset.Collidable = true;
-                    asset.Type = CellAsset.AssetType.Rock;
+                    cell.Asset = new CellAsset(CellAsset.AssetType.Rock);
                 }
-                else
-                {
-                    // cell is a cavity
-                    asset.Collidable = false;
-                    asset.Type = CellAsset.AssetType.None;
-                }
-
-                cell.Asset = asset;
             }
 
             // open terrain layer generation
@@ -142,13 +131,10 @@ namespace _Scripts
                 // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
 
-                CellAsset asset = new CellAsset();
-
                 if (val == 1)
                 {
                     // cell is Meadow
                     cell.Biom = Biom.Meadows;
-                    asset.Collidable = false;
                 }
                 else
                 {
@@ -168,23 +154,14 @@ namespace _Scripts
                     {
                         if (value <= trees)
                         {
-                            asset.Collidable = true;
-                            asset.Type = CellAsset.AssetType.Tree;
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Tree);
                         }
                         else if (value <= trees + bushes)
                         {
-                            asset.Collidable = true;
-                            asset.Type = CellAsset.AssetType.Bush;
-                        }
-                        else if (value <= trees + bushes + gras)
-                        {
-                            asset.Collidable = false;
-                            asset.Type = CellAsset.AssetType.None;
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
                         }
                     }
                 }
-
-                cell.Asset = asset;
             }
 
             return _cellMap;

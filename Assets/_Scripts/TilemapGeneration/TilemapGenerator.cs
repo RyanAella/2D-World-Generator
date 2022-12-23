@@ -114,7 +114,7 @@ namespace _Scripts.TilemapGeneration
 
             if (cell.Asset.Type == CellAsset.AssetType.Rock)
             {
-                tempTile.sprite = CreateSprite(2);
+                tempTile.sprite = CreateSprite(1);
                 tempTile.sprite.texture.SetPixel(0, 0, Color.black);
                 tempTile.sprite.texture.Apply();
                 _mountainTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
@@ -129,7 +129,6 @@ namespace _Scripts.TilemapGeneration
         {
             // foreach indoor cell create asset tile if such is tree
             // each asset on the correct tilemap
-
             if (cell.Asset.Type == CellAsset.AssetType.Tree)
             {
                 tempTile.sprite = CreateSprite(2);

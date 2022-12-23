@@ -1,6 +1,14 @@
 ﻿# Changelog
 
 
+## [0.6.0] - 2022-12-23
+## Added
+- Constructor for CellAsset
+
+## Changed
+- Massive Rock is now completely black
+
+
 ## [0.5.0] - 2022-12-22
 ## Added
 - Percentages for trees, bushes and grass as fields in inspector
