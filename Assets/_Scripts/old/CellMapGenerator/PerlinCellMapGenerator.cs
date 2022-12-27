@@ -41,12 +41,12 @@ namespace _Scripts.old.CellMapGenerator
 
                     if (value < threshold)
                     {
-                        cell.Indoors = true;
+                        cell.indoors = true;
                         _indoorMap.Add(cell);
                     }
                     else
                     {
-                        cell.Indoors = false;
+                        cell.indoors = false;
                         _outdoorMap.Add(cell);
                     }
 

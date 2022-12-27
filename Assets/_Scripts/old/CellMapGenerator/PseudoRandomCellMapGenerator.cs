@@ -35,11 +35,11 @@ namespace _Scripts.old.CellMapGenerator
                     // Next(n) -> value between inclusive 0 and exclusive n
                     if (prng.Next(101) < indoorsPercentage)
                     {
-                        cell.Indoors = true;
+                        cell.indoors = true;
                     }
                     else
                     {
-                        cell.Indoors = false;
+                        cell.indoors = false;
                     }
 
                     _cellMap[x, y] = cell;
@@ -96,24 +96,24 @@ namespace _Scripts.old.CellMapGenerator
 
             if (neighbours >= 4)
             {
-                if (cell.Indoors == true)
+                if (cell.indoors == true)
                 {
-                    tempCell.Indoors = true;
+                    tempCell.indoors = true;
                 }
                 else
                 {
-                    tempCell.Indoors = false;
+                    tempCell.indoors = false;
                 }
             }
             else
             {
-                if (cell.Indoors == true)
+                if (cell.indoors == true)
                 {
-                    tempCell.Indoors = false;
+                    tempCell.indoors = false;
                 }
                 else
                 {
-                    tempCell.Indoors = true;
+                    tempCell.indoors = true;
                 }
             }
 
@@ -128,7 +128,7 @@ namespace _Scripts.old.CellMapGenerator
         {
             // Cell cell = new Cell(tempCell.cellIndex);
 
-            bool myVal = tempCell.Indoors;
+            bool myVal = tempCell.indoors;
             int similarNeighbourCount = 0;
 
             // get the coordinates of all 8 neighbours
@@ -136,17 +136,17 @@ namespace _Scripts.old.CellMapGenerator
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    int xPos = tempCell.CellIndex.x + x;
-                    int yPos = tempCell.CellIndex.y + y;
+                    int xPos = tempCell.cellIndex.x + x;
+                    int yPos = tempCell.cellIndex.y + y;
 
                     // skip the incoming cell, and cell coordinates that are not in the map
-                    if ((xPos == tempCell.CellIndex.x && yPos == tempCell.CellIndex.y) || xPos < 0 || yPos < 0 ||
+                    if ((xPos == tempCell.cellIndex.x && yPos == tempCell.cellIndex.y) || xPos < 0 || yPos < 0 ||
                         xPos >= resolution.x || yPos >= resolution.y)
                     {
                         continue;
                     }
 
-                    bool neighbourVal = _cellMap[xPos, yPos].Indoors;
+                    bool neighbourVal = _cellMap[xPos, yPos].indoors;
 
                     if (neighbourVal == myVal)
                     {
@@ -171,18 +171,18 @@ namespace _Scripts.old.CellMapGenerator
                     {
                         for (int j = -1; j <= 1; j++)
                         {
-                            int xPos = cellMap[x, y].CellIndex.x + i;
-                            int yPos = cellMap[x, y].CellIndex.y + j;
+                            int xPos = cellMap[x, y].cellIndex.x + i;
+                            int yPos = cellMap[x, y].cellIndex.y + j;
 
                             // skip the incoming cell, and cell coordinates that are not in the map
-                            if ((xPos == cellMap[x, y].CellIndex.x && yPos == cellMap[x, y].CellIndex.y) || xPos < 0 ||
+                            if ((xPos == cellMap[x, y].cellIndex.x && yPos == cellMap[x, y].cellIndex.y) || xPos < 0 ||
                                 yPos < 0 ||
                                 xPos >= cellMap.GetLength(0) || yPos >= cellMap.GetLength(1))
                             {
                                 continue;
                             }
 
-                            cellMap[x, y].Neighbours.Add(_cellMap[xPos, yPos]);
+                            cellMap[x, y].neighbours.Add(_cellMap[xPos, yPos]);
                         }
                     }
                 }

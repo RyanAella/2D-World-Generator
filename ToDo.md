@@ -11,8 +11,8 @@
   - [ ] collidable interactable
     - [ ] is trigger true - durchlaufen
     - [ ] is trigger false - collission (abprallen)
-- [ ] Sprite Prefabs
-  - [ ] Trees
+- [ ] Sprite Assets
+  - [x] Trees (27.12.2022)
   - [ ] WoodsFloor
   - [ ] Add randomly different Sprites
 

@@ -36,11 +36,11 @@ namespace _Scripts.old.CellMapGenerator
 
                     if (value < threshold)
                     {
-                        cell.Indoors = true;
+                        cell.indoors = true;
                     }
                     else
                     {
-                        cell.Indoors = false;
+                        cell.indoors = false;
                     }
 
                     _cellMap[x, y] = cell;

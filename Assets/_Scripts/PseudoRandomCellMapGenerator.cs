@@ -33,11 +33,11 @@ namespace _Scripts
 
                     if (prng.Next(101) <= baseLayerSettings.thresholdPercentage)
                     {
-                        cell.Indoors = true;
+                        cell.indoors = true;
                     }
                     else
                     {
-                        cell.Indoors = false;
+                        cell.indoors = false;
                     }
 
                     cellMap[x, y] = cell;
@@ -90,11 +90,11 @@ namespace _Scripts
 
             if (neighbours >= 4)
             {
-                tempCell.Indoors = cell.Indoors == true;
+                tempCell.indoors = cell.indoors == true;
             }
             else
             {
-                tempCell.Indoors = cell.Indoors != true;
+                tempCell.indoors = cell.indoors != true;
             }
 
             cell = tempCell;
@@ -105,7 +105,7 @@ namespace _Scripts
         // Get the number of similar neighbours
         private static int GetSimilarNeighbours(Cell[,] cellMap, Cell tempCell, Vector2Int resolution)
         {
-            bool myVal = tempCell.Indoors;
+            bool myVal = tempCell.indoors;
             int similarNeighbourCount = 0;
 
             // get the coordinates of all 8 neighbours
@@ -113,17 +113,17 @@ namespace _Scripts
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    int xPos = tempCell.CellIndex.x + x;
-                    int yPos = tempCell.CellIndex.y + y;
+                    int xPos = tempCell.cellIndex.x + x;
+                    int yPos = tempCell.cellIndex.y + y;
 
                     // skip the incoming cell, and cell coordinates that are not in the map
-                    if ((xPos == tempCell.CellIndex.x && yPos == tempCell.CellIndex.y) || xPos < 0 || yPos < 0 ||
+                    if ((xPos == tempCell.cellIndex.x && yPos == tempCell.cellIndex.y) || xPos < 0 || yPos < 0 ||
                         xPos >= resolution.x || yPos >= resolution.y)
                     {
                         continue;
                     }
 
-                    bool neighbourVal = cellMap[xPos, yPos].Indoors;
+                    bool neighbourVal = cellMap[xPos, yPos].indoors;
 
                     if (neighbourVal == myVal)
                     {
@@ -148,7 +148,7 @@ namespace _Scripts
             {
                 for (int y = 0; y < resolution.y; y++)
                 {
-                    if (cellMap[x, y].Indoors)
+                    if (cellMap[x, y].indoors)
                     {
                         indoorCells.Add(cellMap[x, y]);
                     }

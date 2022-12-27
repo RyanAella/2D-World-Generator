@@ -31,24 +31,24 @@ namespace _Scripts.CellGeneration
 
         public void PlotNeighbours(Cell cell)
         {
-            if (cell.Neighbours.Count <= 0)
+            if (cell.neighbours.Count <= 0)
             {
                 Debug.LogWarning("Cell has no Neighbours set!");
                 return;
             }
             
             // Draw center cell
-            DrawTile(cell.CellIndex, CellType.Owned);
+            DrawTile(cell.cellIndex, CellType.Owned);
 
-            foreach (var neighbour in cell.Neighbours)
+            foreach (var neighbour in cell.neighbours)
             {
-                if (neighbour.Indoors == cell.Indoors)
+                if (neighbour.indoors == cell.indoors)
                 {
-                    DrawTile(neighbour.CellIndex, CellType.Similar);
+                    DrawTile(neighbour.cellIndex, CellType.Similar);
                 }
                 else
                 {
-                    DrawTile(neighbour.CellIndex, CellType.Different);
+                    DrawTile(neighbour.cellIndex, CellType.Different);
                 }
             }
         }

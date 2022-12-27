@@ -1,6 +1,15 @@
 ﻿# Changelog
 
 
+## [0.9.1] - 2022-12-27
+## Added
+- Collider (Tilemap and Composite) for MassiveRock, Wall and Tree Layers
+
+## Changed
+- Walls were created on cells that should have been massive rock
+- Trees and Bushes now look better
+
+
 ## [0.8.0] - 2022-12-26
 ## Added
 - Dictionary in Cell class containing the Tiles a cell adds to a layer/Tilemap

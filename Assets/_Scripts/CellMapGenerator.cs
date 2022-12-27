@@ -62,12 +62,12 @@ namespace _Scripts
 
                     if (val == 1)
                     {
-                        cell.Indoors = true;
+                        cell.indoors = true;
                         _indoorCells.Add(cell);
                     }
                     else
                     {
-                        cell.Indoors = false;
+                        cell.indoors = false;
                         _outdoorCells.Add(cell);
                     }
 
@@ -80,15 +80,20 @@ namespace _Scripts
             foreach (var cell in _indoorCells)
             {
                 // all indoor cells are currently cave
-                cell.Biom = Biom.Cave;
+                cell.biom = Biom.Cave;
 
                 // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
-                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
+                var val = ValueGenerator.Evaluate(cell.cellIndex.x, cell.cellIndex.y, mountainLayerSettings);
 
                 if (val == 1)
                 {
                     // cell is massive rock
                     cell.Asset = new CellAsset(CellAsset.AssetType.MassiveRock);
+                }
+                else
+                {
+                    // cell is cavity
+                    cell.Asset = new CellAsset(CellAsset.AssetType.Cavity);
                 }
             }
 
@@ -96,17 +101,17 @@ namespace _Scripts
             foreach (var cell in _outdoorCells)
             {
                 // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
-                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
+                var val = ValueGenerator.Evaluate(cell.cellIndex.x, cell.cellIndex.y, outdoorBiomSetting);
 
                 if (val == 1)
                 {
                     // cell is Meadow
-                    cell.Biom = Biom.Meadows;
+                    cell.biom = Biom.Meadows;
                 }
                 else
                 {
                     // cell is Woods
-                    cell.Biom = Biom.Woods;
+                    cell.biom = Biom.Woods;
 
                     var value = prng.Next(101);
                     var trees = assetGenerationSettings.treePercentage;
@@ -140,25 +145,26 @@ namespace _Scripts
                 {
                     for (int y = -1; y <= 1; y++)
                     {
-                        int xPos = cell.CellIndex.x + x;
-                        int yPos = cell.CellIndex.y + y;
+                        int xPos = cell.cellIndex.x + x;
+                        int yPos = cell.cellIndex.y + y;
             
                         // skip the incoming cell, and cell coordinates that are not in the map
-                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
+                        if ((xPos == cell.cellIndex.x && yPos == cell.cellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {
                             continue;
                         }
             
-                        bool neighbourVal = _cellMap[xPos, yPos].Indoors;
-                        var neighbourAsset = _cellMap[xPos, yPos].Asset.Type;
-            
-                        if (neighbourVal != cell.Indoors)
+                        bool neighbourVal = _cellMap[xPos, yPos].indoors;
+                        var neighbourAsset = _cellMap[xPos, yPos].Asset;
+                        
+                        if (neighbourVal == false)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
-                        else if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
-                                 neighbourAsset != CellAsset.AssetType.MassiveRock)
+                        
+                        if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
+                            neighbourAsset.Type == CellAsset.AssetType.Cavity)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }

@@ -1,9 +1,19 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace _Scripts.CellGeneration
 {
+    // /**
+    //  * This class stores the parameters for each generation step.
+    //  */
+    // [Serializable] // With this it can be showed in the Inspector
+    // public class CellGenerationSettings
+    // {
+    //     public Tiles _tiles;
+    // }
+    
     /**
      * The Bioms of the map.
      */
@@ -13,7 +23,7 @@ namespace _Scripts.CellGeneration
         Woods,
         Cave,
     }
-    
+
     /**
      * The Assets a cell can hold and if they are collidable or interactable.
      */
@@ -24,11 +34,12 @@ namespace _Scripts.CellGeneration
         public bool Collidable = false;
         public bool Interactable = false;
         public bool CollidableInteractable = false;
-        
+
         public enum AssetType
         {
             None,
             MassiveRock,
+            Cavity,
             Wall,
             Tree,
             Bush
@@ -49,6 +60,12 @@ namespace _Scripts.CellGeneration
                     Collidable = false;
                     Interactable = false;
                     CollidableInteractable = true;
+                    break;
+                case AssetType.Cavity:
+                    Type = type;
+                    Collidable = false;
+                    Interactable = false;
+                    CollidableInteractable = false;
                     break;
                 case AssetType.Wall:
                     Type = type;
@@ -78,21 +95,22 @@ namespace _Scripts.CellGeneration
     public class Cell
     {
         // general
-        public Vector2Int CellIndex;
-        public bool Indoors = false; // in- or outdoor
+        public Vector2Int cellIndex;
+        public bool indoors = false; // in- or outdoor
 
         // biom
-        public Biom Biom;
+        public Biom biom;
 
         // asset
         public CellAsset Asset; // e.g. a tree stands on this cell
 
         // neighbours
-        public List<Cell> Neighbours;
-        
+        public List<Cell> neighbours;
+
         // Tile
+        public Dictionary<TilemapTypes, Tile> BiomTiles;
         public Dictionary<TilemapTypes, string> Tiles;
-        
+
         public enum TilemapTypes
         {
             BiomLayer,
@@ -102,42 +120,56 @@ namespace _Scripts.CellGeneration
             BushLayer
         }
 
+        // [SerializeField] public Tiles biomTiles;
+
         public Cell()
         {
             Debug.LogWarning("Cell created without index!");
-            CellIndex = new Vector2Int();
-            Neighbours = new List<Cell>();
+            cellIndex = new Vector2Int();
+            neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
+            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(int x, int y)
         {
-            CellIndex = new Vector2Int(x, y);
-            Neighbours = new List<Cell>();
+            cellIndex = new Vector2Int(x, y);
+            neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
+            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(Vector2Int cellPos)
         {
-            CellIndex = cellPos;
-            Neighbours = new List<Cell>();
+            cellIndex = cellPos;
+            neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
+            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public void GenerateTiles()
         {
-            switch (Biom)
+            // CellGenerationSettings tiles = new CellGenerationSettings();
+            // if (tiles._tiles != null) Debug.Log(tiles._tiles.tiles.Count);
+
+            switch (biom)
             {
                 case Biom.Cave:
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/CaveFloor");
+                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[0]);
+                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[0]);
                     break;
                 case Biom.Meadows:
+                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[1]);
+                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[1]);
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/MeadowsFloor");
                     break;
                 case Biom.Woods:
+                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[2]);
+                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[2]);
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/WoodsFloor");
                     break;
             }
@@ -145,16 +177,18 @@ namespace _Scripts.CellGeneration
             switch (Asset.Type)
             {
                 case CellAsset.AssetType.MassiveRock:
-                    Tiles.Add(TilemapTypes.MassiveRockLayer, "Tiles/MassiveRock");
+                    Tiles.Add(TilemapTypes.MassiveRockLayer, "Tiles/Indoor/MassiveRock");
+                    break;
+                case CellAsset.AssetType.Cavity:
                     break;
                 case CellAsset.AssetType.Wall:
-                    Tiles.Add(TilemapTypes.WallLayer, "Tiles/Wall");
+                    Tiles.Add(TilemapTypes.WallLayer, "Tiles/Indoor/Wall");
                     break;
                 case CellAsset.AssetType.Tree:
-                    // Tiles.Add(TilemapTypes.TreeLayer, "Tiles/Tree");
+                    Tiles.Add(TilemapTypes.TreeLayer, "Tiles/Outdoor/Tree");
                     break;
                 case CellAsset.AssetType.Bush:
-                    Tiles.Add(TilemapTypes.BushLayer, "Tiles/Bush");
+                    Tiles.Add(TilemapTypes.BushLayer, "Tiles/Outdoor/Bush");
                     break;
                 case CellAsset.AssetType.None:
                     break;

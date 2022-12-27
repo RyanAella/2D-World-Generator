@@ -28,9 +28,14 @@ namespace _Scripts
         
         // Settings for determining how many percent of woods are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings assetGenerationSettings;
-
+        
+        // Settings for 
+        // [SerializeField] private CellGenerationSettings cellGenerationSettings;
+        
         // For the use of OnValidate()
         private bool _scriptLoaded = false;
+        
+        // [SerializeField] private Cell cell;
 
         // For Debugging
         // private CellDebugger _debugger;

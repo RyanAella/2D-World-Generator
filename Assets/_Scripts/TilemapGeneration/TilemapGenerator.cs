@@ -43,6 +43,7 @@ namespace _Scripts.TilemapGeneration
             _bushTilemap.ClearAllTiles();
 
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
+            
 
             // foreach cell, TileMapGenerator.GenerateTiles(cell)
             foreach (var cell in cellMap)
@@ -58,26 +59,57 @@ namespace _Scripts.TilemapGeneration
                     switch (tile.Key)
                     {
                         case Cell.TilemapTypes.BiomLayer:
-                            _biomTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                            // _biomTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tile.Value);
+                            _biomTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
                             break;
                         case Cell.TilemapTypes.MassiveRockLayer:
-                            _massiveRockTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0),
+                            _massiveRockTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0),
                                 tempTile);
                             break;
                         case Cell.TilemapTypes.WallLayer:
-                            _wallTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                            _wallTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
                             break;
                         case Cell.TilemapTypes.TreeLayer:
-                            _treeTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                            _treeTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
                             break;
                         case Cell.TilemapTypes.BushLayer:
-                            _bushTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
+                            _bushTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+                
+                // foreach (var tile in cell.BiomTiles)
+                // {
+                //     // tempTile.sprite = Resources.Load(tile.Value) as Sprite;
+                //
+                //     switch (tile.Key)
+                //     {
+                //         case Cell.TilemapTypes.BiomLayer:
+                //             _biomTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tile.Value);
+                //             // _biomTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
+                //             break;
+                //         // case Cell.TilemapTypes.MassiveRockLayer:
+                //         //     _massiveRockTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0),
+                //         //         tempTile);
+                //         //     break;
+                //         // case Cell.TilemapTypes.WallLayer:
+                //         //     _wallTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
+                //         //     break;
+                //         // case Cell.TilemapTypes.TreeLayer:
+                //         //     _treeTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
+                //         //     break;
+                //         // case Cell.TilemapTypes.BushLayer:
+                //         //     _bushTilemap.SetTile(new Vector3Int(cell.cellIndex.x, cell.cellIndex.y, 0), tempTile);
+                //         //     break;
+                //         default:
+                //             throw new ArgumentOutOfRangeException();
+                //     }
+                // }
             }
+            
+            
 
             _biomTilemap.CompressBounds();
             _massiveRockTilemap.CompressBounds();
