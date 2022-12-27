@@ -76,39 +76,6 @@ namespace _Scripts
             }
             // }
 
-
-            // Get the values of the neighbours
-            // If one or more neighbours is different from the current cell, make the current cell a wall
-            //  foreach (var cell in _cellMap)
-            // {
-            //     // get the coordinates of all 8 neighbours
-            //     for (int x = -1; x <= 1; x++)
-            //     {
-            //         for (int y = -1; y <= 1; y++)
-            //         {
-            //             int xPos = cell.CellIndex.x + x;
-            //             int yPos = cell.CellIndex.y + y;
-            //
-            //             // skip the incoming cell, and cell coordinates that are not in the map
-            //             if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
-            //                 xPos >= resolution.x || yPos >= resolution.y)
-            //             {
-            //                 continue;
-            //             }
-            //
-            //             bool neighbourVal = _cellMap[xPos, yPos].Indoors;
-            //
-            //             if (neighbourVal != cell.Indoors)
-            //             {
-            //                 // cell.isWall = true;
-            //             }
-            //
-            //             cell.Neighbours.Add(_cellMap[xPos, yPos]);
-            //         }
-            //     }
-            // }
-
-
             // mountain layer generation
             foreach (var cell in _indoorCells)
             {
@@ -121,7 +88,7 @@ namespace _Scripts
                 if (val == 1)
                 {
                     // cell is massive rock
-                    cell.Asset = new CellAsset(CellAsset.AssetType.Rock);
+                    cell.Asset = new CellAsset(CellAsset.AssetType.MassiveRock);
                 }
             }
 
@@ -159,6 +126,41 @@ namespace _Scripts
                         else if (value <= trees + bushes)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
+                        }
+                    }
+                }
+            }
+            
+            // Get the values of the neighbours
+            // If one or more neighbours is different from the current cell, make the current cell a wall
+            foreach (var cell in _indoorCells)
+            {
+                // get the coordinates of all 8 neighbours
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        int xPos = cell.CellIndex.x + x;
+                        int yPos = cell.CellIndex.y + y;
+            
+                        // skip the incoming cell, and cell coordinates that are not in the map
+                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
+                            xPos >= resolution.x || yPos >= resolution.y)
+                        {
+                            continue;
+                        }
+            
+                        bool neighbourVal = _cellMap[xPos, yPos].Indoors;
+                        var neighbourAsset = _cellMap[xPos, yPos].Asset.Type;
+            
+                        if (neighbourVal != cell.Indoors)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
+                        }
+                        else if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
+                                 neighbourAsset != CellAsset.AssetType.MassiveRock)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
                     }
                 }

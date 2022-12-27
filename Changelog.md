@@ -1,6 +1,23 @@
 ﻿# Changelog
 
 
+## [0.8.0] - 2022-12-26
+## Added
+- Dictionary in Cell class containing the Tiles a cell adds to a layer/Tilemap
+- Sprites for Bioms and Assets
+
+## Changed
+- TilemapGenerator adds Tiles to Tilemap based on information stored in the Dictionary of each cell
+
+
+## [0.7.0] - 2022-12-24
+## Added
+- Cell has now attribute Tile
+
+## Changed
+- Different Asset Types are now on different Tilemaps based on collidable, interactable an collidableInteractable
+
+
 ## [0.6.0] - 2022-12-23
 ## Added
 - Constructor for CellAsset

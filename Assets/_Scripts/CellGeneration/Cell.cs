@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace _Scripts.CellGeneration
 {
@@ -21,16 +21,17 @@ namespace _Scripts.CellGeneration
     {
         public AssetType Type;
 
-        private bool _collidable = false;
-        private bool _interactable = false;
-        private bool _collidableInteractable = false;
+        public bool Collidable = false;
+        public bool Interactable = false;
+        public bool CollidableInteractable = false;
         
         public enum AssetType
         {
             None,
-            Rock,
+            MassiveRock,
+            Wall,
             Tree,
-            Bush,
+            Bush
         }
 
         public CellAsset(AssetType type)
@@ -39,27 +40,33 @@ namespace _Scripts.CellGeneration
             {
                 case AssetType.None:
                     Type = type;
-                    _collidable = false;
-                    _interactable = false;
-                    _collidableInteractable = false;
+                    Collidable = false;
+                    Interactable = false;
+                    CollidableInteractable = false;
                     break;
-                case AssetType.Rock:
+                case AssetType.MassiveRock:
                     Type = type;
-                    _collidable = false;
-                    _interactable = false;
-                    _collidableInteractable = true;
+                    Collidable = false;
+                    Interactable = false;
+                    CollidableInteractable = true;
+                    break;
+                case AssetType.Wall:
+                    Type = type;
+                    Collidable = true;
+                    Interactable = false;
+                    CollidableInteractable = false;
                     break;
                 case AssetType.Tree:
                     Type = type;
-                    _collidable = false;
-                    _interactable = false;
-                    _collidableInteractable = true;
+                    Collidable = false;
+                    Interactable = false;
+                    CollidableInteractable = true;
                     break;
                 case AssetType.Bush:
                     Type = type;
-                    _collidable = false;
-                    _interactable = false;
-                    _collidableInteractable = false;
+                    Collidable = false;
+                    Interactable = false;
+                    CollidableInteractable = false;
                     break;
             }
         }
@@ -82,6 +89,18 @@ namespace _Scripts.CellGeneration
 
         // neighbours
         public List<Cell> Neighbours;
+        
+        // Tile
+        public Dictionary<TilemapTypes, string> Tiles;
+        
+        public enum TilemapTypes
+        {
+            BiomLayer,
+            MassiveRockLayer,
+            WallLayer,
+            TreeLayer,
+            BushLayer
+        }
 
         public Cell()
         {
@@ -89,6 +108,7 @@ namespace _Scripts.CellGeneration
             CellIndex = new Vector2Int();
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
+            Tiles = new Dictionary<TilemapTypes, string>();
         }
 
         public Cell(int x, int y)
@@ -96,6 +116,7 @@ namespace _Scripts.CellGeneration
             CellIndex = new Vector2Int(x, y);
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
+            Tiles = new Dictionary<TilemapTypes, string>();
         }
 
         public Cell(Vector2Int cellPos)
@@ -103,6 +124,41 @@ namespace _Scripts.CellGeneration
             CellIndex = cellPos;
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
+            Tiles = new Dictionary<TilemapTypes, string>();
+        }
+
+        public void GenerateTiles()
+        {
+            switch (Biom)
+            {
+                case Biom.Cave:
+                    Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/CaveFloor");
+                    break;
+                case Biom.Meadows:
+                    Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/MeadowsFloor");
+                    break;
+                case Biom.Woods:
+                    Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/WoodsFloor");
+                    break;
+            }
+
+            switch (Asset.Type)
+            {
+                case CellAsset.AssetType.MassiveRock:
+                    Tiles.Add(TilemapTypes.MassiveRockLayer, "Tiles/MassiveRock");
+                    break;
+                case CellAsset.AssetType.Wall:
+                    Tiles.Add(TilemapTypes.WallLayer, "Tiles/Wall");
+                    break;
+                case CellAsset.AssetType.Tree:
+                    // Tiles.Add(TilemapTypes.TreeLayer, "Tiles/Tree");
+                    break;
+                case CellAsset.AssetType.Bush:
+                    Tiles.Add(TilemapTypes.BushLayer, "Tiles/Bush");
+                    break;
+                case CellAsset.AssetType.None:
+                    break;
+            }
         }
     }
 }
