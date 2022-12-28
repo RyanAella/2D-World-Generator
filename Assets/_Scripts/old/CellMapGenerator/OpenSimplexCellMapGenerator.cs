@@ -1,6 +1,6 @@
+using _Scripts._GradientNoise.OpenSimplex;
 using _Scripts.CellGeneration;
 using _Scripts.Helper;
-using _Scripts.OpenSimplex;
 using UnityEngine;
 
 namespace _Scripts.old.CellMapGenerator

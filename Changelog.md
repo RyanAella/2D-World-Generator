@@ -1,6 +1,11 @@
 ﻿# Changelog
 
 
+## [0.10.1] - 2022-12-28
+## Added
+- Entire generation process in Pseudo Random
+
+
 ## [0.9.1] - 2022-12-27
 ## Added
 - Collider (Tilemap and Composite) for MassiveRock, Wall and Tree Layers

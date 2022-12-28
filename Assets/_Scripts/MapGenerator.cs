@@ -1,6 +1,7 @@
+using _Scripts._GradientNoise;
+using _Scripts._GradientNoise.TilemapGeneration;
+using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
-using _Scripts.TilemapGeneration;
-using _Scripts.ValueGeneration;
 using UnityEngine;
 
 namespace _Scripts
