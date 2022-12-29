@@ -11,10 +11,10 @@ namespace _Scripts._PseudoRandom
     [Serializable] // With this it can be showed in the Inspector
     public class AssetGenerationSettings
     {
-        // trees, bushes
+        // trees, bushes, grass
         [Range(1, 100)] public int treePercentage;
         [Range(1, 100)] public int bushPercentage;
-        [Range(1, 100)] public int grasPercentage;
+        [Range(1, 100)] public int grassPercentage;
     }
 
     /**
@@ -50,6 +50,12 @@ namespace _Scripts._PseudoRandom
         }
     }
 
+    /**
+     * This class generates the cell map.
+     * First: The Base Layer (in-/outdoors).
+     * Second: The Mountain Layers and its Bioms.
+     * Third: The Open Terrain Layer and its Bioms.
+     */
     public class CellMapGeneratorPseudoRandom
     {
         private Cell[,] _cellMap;
@@ -86,9 +92,9 @@ namespace _Scripts._PseudoRandom
             _cellMap = GenerateBaseLayer(resolution, baseLayerSettings, prng);
             GetInAndOutdoorCells(_cellMap, out _indoorCells, out _outdoorCells, resolution);
 
-            _cellMap = GenerateMountainLayer(_cellMap, _indoorCells, resolution, mountainLayerSettings, prng1);
+            _cellMap = GenerateMountainLayer(_indoorCells, mountainLayerSettings, prng1);
 
-            _cellMap = GenerateOpenTerrainLayer(_cellMap, _outdoorCells, resolution, outdoorBiomSettings,
+            _cellMap = GenerateOpenTerrainLayer(_cellMap, _outdoorCells, outdoorBiomSettings,
                 assetGenerationSettings,
                 prng2);
 
@@ -97,6 +103,10 @@ namespace _Scripts._PseudoRandom
             return _cellMap;
         }
 
+        /*
+         * Generate the Base Layer.
+         * This contains the information whether a cell is in- or outdoors.
+         */
         private Cell[,] GenerateBaseLayer(Vector2Int resolution, MapGenerationSettings baseLayerSettings,
             System.Random prng)
         {
@@ -106,40 +116,43 @@ namespace _Scripts._PseudoRandom
                 {
                     Cell cell = new Cell(x, y);
 
-                    cell.indoors = prng.Next(101) < baseLayerSettings.thresholdPercentage;
+                    cell.Indoors = prng.Next(101) < baseLayerSettings.thresholdPercentage;
 
                     _cellMap[x, y] = cell;
                 }
             }
 
-            var layer = "BaseLayer";
-
-            return SmoothCellMap(_cellMap, baseLayerSettings, resolution, layer);
+            // Smooth the map and return it
+            return SmoothCellMap(_cellMap, baseLayerSettings, resolution);
         }
 
-        private Cell[,] GenerateMountainLayer(Cell[,] cellMap,
-            List<Cell> indoorCells, Vector2Int resolution,
-            MapGenerationSettings mountainLayerSettings, System.Random prng)
+        /*
+         * Generate the Mountain (indoors) Layer.
+         * This contains the information whether a cell is massive rock or a cavity.
+         */
+        private Cell[,] GenerateMountainLayer(List<Cell> indoorCells, MapGenerationSettings mountainLayerSettings,
+            System.Random prng)
         {
             foreach (var cell in indoorCells)
             {
-                // all indoor cells are currently cave
-                cell.biom = Biom.Cave;
+                // all indoor cells are cave
+                cell.Biom = Biom.Cave;
 
                 cell.Asset = prng.Next(101) < mountainLayerSettings.thresholdPercentage
                     ? new CellAsset(CellAsset.AssetType.MassiveRock)
                     : new CellAsset(CellAsset.AssetType.Cavity);
 
-                _cellMap[cell.cellIndex.x, cell.cellIndex.y] = cell;
+                _cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
 
-            var layer = "MountainLayer";
-
-            return _cellMap; //SmoothCellMap(cellMap, mountainLayerSettings, resolution, layer);
+            return _cellMap;
         }
 
-        private Cell[,] GenerateOpenTerrainLayer(Cell[,] cellMap,
-            List<Cell> outdoorCells, Vector2Int resolution,
+        /*
+         * Generate the Open Terrain (outdoors) Layer.
+         * This contains the information whether a cell is meadows or woods and whether has trees or bushes.
+         */
+        private Cell[,] GenerateOpenTerrainLayer(Cell[,] cellMap, List<Cell> outdoorCells,
             MapGenerationSettings outdoorBiomSettings, AssetGenerationSettings assetGenerationSettings,
             System.Random prng)
         {
@@ -147,18 +160,18 @@ namespace _Scripts._PseudoRandom
             {
                 if (prng.Next(101) < outdoorBiomSettings.thresholdPercentage)
                 {
-                    // cell is Meadow
-                    cell.biom = Biom.Meadows;
+                    // cell is Meadows
+                    cell.Biom = Biom.Meadows;
                 }
                 else
                 {
                     // cell is Woods
-                    cell.biom = Biom.Woods;
+                    cell.Biom = Biom.Woods;
 
                     var value = prng.Next(101);
                     var trees = assetGenerationSettings.treePercentage;
                     var bushes = assetGenerationSettings.bushPercentage;
-                    var gras = assetGenerationSettings.grasPercentage;
+                    var gras = assetGenerationSettings.grassPercentage;
 
                     if (trees + bushes + gras > 100)
                     {
@@ -177,12 +190,15 @@ namespace _Scripts._PseudoRandom
                     }
                 }
 
-                cellMap[cell.cellIndex.x, cell.cellIndex.y] = cell;
+                cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
 
-            return _cellMap; //SmoothCellMap(cellMap, outdoorBiomSettings, resolution, layer);
+            return _cellMap;
         }
 
+        /*
+         * Generate the indoor cells containing walls
+         */
         private Cell[,] GenerateWalls(Vector2Int resolution, List<Cell> indoorCells)
         {
             // Get the values of the neighbours
@@ -194,24 +210,26 @@ namespace _Scripts._PseudoRandom
                 {
                     for (int y = -1; y <= 1; y++)
                     {
-                        int xPos = cell.cellIndex.x + x;
-                        int yPos = cell.cellIndex.y + y;
+                        int xPos = cell.CellIndex.x + x;
+                        int yPos = cell.CellIndex.y + y;
 
                         // skip the incoming cell, and cell coordinates that are not in the map
-                        if ((xPos == cell.cellIndex.x && yPos == cell.cellIndex.y) || xPos < 0 || yPos < 0 ||
+                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {
                             continue;
                         }
 
-                        bool neighbourVal = _cellMap[xPos, yPos].indoors;
+                        bool neighbourVal = _cellMap[xPos, yPos].Indoors;
                         var neighbourAsset = _cellMap[xPos, yPos].Asset;
 
+                        // if the neighbour is outdoors the cell becomes a wall
                         if (neighbourVal == false)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
 
+                        // if the cell is indoors and massive rock and the neighbour is a cavity the cell becomes a wall
                         if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
                             neighbourAsset.Type == CellAsset.AssetType.Cavity)
                         {
@@ -220,19 +238,20 @@ namespace _Scripts._PseudoRandom
                     }
                 }
 
-                _cellMap[cell.cellIndex.x, cell.cellIndex.y] = cell;
+                _cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
 
             return _cellMap;
         }
 
-        // Smooth the Cell Map
+        /*
+         * Smooth the Cell Map and apply the rules
+         */
         private static Cell[,] SmoothCellMap(Cell[,] cellMap, MapGenerationSettings settings,
-            Vector2Int resolution, string layer)
+            Vector2Int resolution)
         {
             if (cellMap == null)
             {
-                // Debug.LogError("CellMap to smooth equals null.");
                 return null;
             }
 
@@ -258,7 +277,9 @@ namespace _Scripts._PseudoRandom
         }
 
 
-        // Apply rules to the base cells
+        /*
+         * Apply the rule to the given cell
+         */
         private static Cell ApplyFloorRules(Cell[,] cellMap, Cell cell,
             Vector2Int resolution)
         {
@@ -268,11 +289,11 @@ namespace _Scripts._PseudoRandom
 
             if (neighbours >= 4)
             {
-                tempCell.indoors = cell.indoors;
+                tempCell.Indoors = cell.Indoors;
             }
             else
             {
-                tempCell.indoors = cell.indoors != true;
+                tempCell.Indoors = cell.Indoors != true;
             }
 
             cell = tempCell;
@@ -376,11 +397,13 @@ namespace _Scripts._PseudoRandom
         // }
 
 
-        // Get the number of similar neighbours
+        /*
+         * Get the number of similar neighbours
+         */
         private static int GetSimilarNeighbours(Cell[,] cellMap, Cell tempCell,
             Vector2Int resolution)
         {
-            var myVal = tempCell.indoors;
+            var myVal = tempCell.Indoors;
             int similarNeighbourCount = 0;
 
             // get the coordinates of all 8 neighbours
@@ -388,31 +411,31 @@ namespace _Scripts._PseudoRandom
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    int xPos = tempCell.cellIndex.x + x;
-                    int yPos = tempCell.cellIndex.y + y;
+                    int xPos = tempCell.CellIndex.x + x;
+                    int yPos = tempCell.CellIndex.y + y;
 
                     // skip the incoming cell, and cell coordinates that are not in the map
-                    if ((xPos == tempCell.cellIndex.x && yPos == tempCell.cellIndex.y) || xPos < 0 || yPos < 0 ||
+                    if ((xPos == tempCell.CellIndex.x && yPos == tempCell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                         xPos >= resolution.x || yPos >= resolution.y)
                     {
                         continue;
                     }
 
-                    var neighbourVal = cellMap[xPos, yPos].indoors;
+                    var neighbourVal = cellMap[xPos, yPos].Indoors;
 
                     if (neighbourVal == myVal)
                     {
                         similarNeighbourCount++;
                     }
-
-                    // tempCell.neighbours.Add(neighbourVal);
                 }
             }
 
-            // outCell = cell;
             return similarNeighbourCount;
         }
 
+        /*
+         * Add all indoor cells to the indoorCells list and all outdoor cells to the outdoorCells list
+         */
         private static void GetInAndOutdoorCells(Cell[,] cellMap, out List<Cell> indoorCells,
             out List<Cell> outdoorCells, Vector2Int resolution)
         {
@@ -423,7 +446,7 @@ namespace _Scripts._PseudoRandom
             {
                 for (int y = 0; y < resolution.y; y++)
                 {
-                    if (cellMap[x, y].indoors)
+                    if (cellMap[x, y].Indoors)
                     {
                         indoorCells.Add(cellMap[x, y]);
                     }

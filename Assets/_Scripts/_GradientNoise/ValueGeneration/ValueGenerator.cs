@@ -16,7 +16,7 @@ namespace _Scripts._GradientNoise.ValueGeneration
     /**
      * This class stores the parameters for each generation step.
      */
-    [Serializable] // With this it can be showed in the Inspector
+    [Serializable] // With this it can be shown in the Inspector
     public class ValueGenerationSettings
     {
         // general
@@ -27,7 +27,6 @@ namespace _Scripts._GradientNoise.ValueGeneration
         [Header("Seed")] public bool useRandomSeed = true;
         private bool _seedLocked = false;
         [SerializeField] private string seed = "Hello World!";
-
         [Range(1000.0f, 1000000.0f)] public float seedScale = 100000.0f;
 
         // gradient noise settings
@@ -35,15 +34,15 @@ namespace _Scripts._GradientNoise.ValueGeneration
         public float noiseScale = 0.033f;
 
         // Seed can only be changed if there is no seed
-        public void SetSeed(string seed)
+        public void SetSeed(string inSeed)
         {
             if (_seedLocked) return;
-            
-            this.seed = seed;
+
+            seed = inSeed;
             _seedLocked = true;
         }
 
-        public String GetSeed()
+        public string GetSeed()
         {
             return seed;
         }
@@ -56,31 +55,23 @@ namespace _Scripts._GradientNoise.ValueGeneration
     {
         public static int Evaluate(int x, int y, ValueGenerationSettings settings)
         {
-            float threshold = 0.0f;
+            float threshold;
+            double noiseValue;
 
             if (settings.useRandomSeed)
             {
                 settings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
             }
 
-            double noiseValue = 0.0;
+            float seedOffset = settings.GetSeed().GetHashCode() / settings.seedScale;
+            var sampleX = (x + seedOffset) * settings.noiseScale;
+            var sampleY = (y + seedOffset) * settings.noiseScale;
 
             switch (settings.noiseType)
             {
-                // case NoiseType.PseudoRandom:
-                //     System.Random prng = new System.Random(settings.GetSeed().GetHashCode());
-                //     threshold = (float)settings.thresholdPercentage;
-                //     noiseValue = prng.Next(101);
-                //     break;
-
                 case NoiseType.Perlin:
 
-                    float seedOffset = settings.GetSeed().GetHashCode() / settings.seedScale;
                     threshold = Mathf.Lerp(0.0f, 1.0f, (float)settings.thresholdPercentage / 100);
-
-                    var sampleX = (x + seedOffset) * settings.noiseScale;
-                    var sampleY = (y + seedOffset) * settings.noiseScale;
-
                     noiseValue = Mathf.PerlinNoise(sampleX, sampleY);
                     break;
 
@@ -88,10 +79,9 @@ namespace _Scripts._GradientNoise.ValueGeneration
 
                     OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(settings.GetSeed().GetHashCode());
                     threshold = Mathf.Lerp(-1.0f, 1.0f, (float)settings.thresholdPercentage / 100);
-
-                    noiseValue = (float)openSimplexNoise.Evaluate(x * settings.noiseScale, y * settings.noiseScale);
+                    noiseValue = (float)openSimplexNoise.Evaluate(sampleX, y * sampleY);
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

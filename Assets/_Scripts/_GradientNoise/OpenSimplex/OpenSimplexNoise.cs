@@ -1,10 +1,10 @@
-/**
+/*
  * OpenSimplexNoise.cs
  * Ported from https://gist.github.com/digitalshadow/134a3a02b67cecd72181
  */
 
-/**
- * This is free and unencumbered software released into the public domain.
+/*
+ This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
 distribute this software, either in source code form or as a compiled
@@ -28,11 +28,12 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
- */
+*/
 
 /* OpenSimplex Noise in C#
  * Ported from https://gist.github.com/KdotJPG/b1270127455a94ac5d19
- * and heavily refactored to improve performance. */
+ * and heavily refactored to improve performance.
+ */
 
 using System;
 using System.Runtime.CompilerServices;

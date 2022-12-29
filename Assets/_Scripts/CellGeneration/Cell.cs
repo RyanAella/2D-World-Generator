@@ -4,15 +4,6 @@ using UnityEngine.Tilemaps;
 
 namespace _Scripts.CellGeneration
 {
-    // /**
-    //  * This class stores the parameters for each generation step.
-    //  */
-    // [Serializable] // With this it can be showed in the Inspector
-    // public class CellGenerationSettings
-    // {
-    //     public Tiles _tiles;
-    // }
-    
     /**
      * The Bioms of the map.
      */
@@ -34,6 +25,7 @@ namespace _Scripts.CellGeneration
         public bool Interactable = false;
         public bool CollidableInteractable = false;
 
+        // The cell asset types
         public enum AssetType
         {
             None,
@@ -44,6 +36,7 @@ namespace _Scripts.CellGeneration
             Bush
         }
 
+        // The cell asset and its values
         public CellAsset(AssetType type)
         {
             switch (type)
@@ -94,22 +87,22 @@ namespace _Scripts.CellGeneration
     public class Cell
     {
         // general
-        public Vector2Int cellIndex;
-        public bool indoors = false; // in- or outdoor
+        public Vector2Int CellIndex;
+        public bool Indoors = false; // in- or outdoor
 
         // biom
-        public Biom biom;
+        public Biom Biom;
 
         // asset
         public CellAsset Asset; // e.g. a tree stands on this cell
 
         // neighbours
-        public List<Cell> neighbours;
+        public List<Cell> Neighbours;
 
         // Tile
-        public Dictionary<TilemapTypes, Tile> BiomTiles;
         public Dictionary<TilemapTypes, string> Tiles;
 
+        // The tilemap types
         public enum TilemapTypes
         {
             BiomLayer,
@@ -119,56 +112,45 @@ namespace _Scripts.CellGeneration
             BushLayer
         }
 
-        // [SerializeField] public Tiles biomTiles;
-
         public Cell()
         {
             Debug.LogWarning("Cell created without index!");
-            cellIndex = new Vector2Int();
-            neighbours = new List<Cell>();
+            CellIndex = new Vector2Int();
+            Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
-            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(int x, int y)
         {
-            cellIndex = new Vector2Int(x, y);
-            neighbours = new List<Cell>();
+            CellIndex = new Vector2Int(x, y);
+            Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
-            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(Vector2Int cellPos)
         {
-            cellIndex = cellPos;
-            neighbours = new List<Cell>();
+            CellIndex = cellPos;
+            Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
             Tiles = new Dictionary<TilemapTypes, string>();
-            BiomTiles = new Dictionary<TilemapTypes, Tile>();
         }
 
+        /*
+         * Each cell generates its own biom and asset
+         */
         public void GenerateTiles()
         {
-            // CellGenerationSettings tiles = new CellGenerationSettings();
-            // if (tiles._tiles != null) Debug.Log(tiles._tiles.tiles.Count);
-
-            switch (biom)
+            switch (Biom)
             {
                 case Biom.Cave:
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/CaveFloor");
-                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[0]);
-                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[0]);
                     break;
                 case Biom.Meadows:
-                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[1]);
-                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[1]);
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/MeadowsFloor");
                     break;
                 case Biom.Woods:
-                    // Debug.Log("biomTiles.tiles[0]: " + biomTiles.tiles[2]);
-                    // BiomTiles.Add(TilemapTypes.BiomLayer, tiles._tiles.tiles[2]);
                     Tiles.Add(TilemapTypes.BiomLayer, "Tiles/Biom/WoodsFloor");
                     break;
             }

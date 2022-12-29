@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace _Scripts.Helper
 {
+    /*
+     * This class displays the map
+     */
     public class MapDisplay
     {
         private GameObject _root;
@@ -17,6 +20,7 @@ namespace _Scripts.Helper
             // create texture and rect for Sprite
             texture = new Texture2D(resolution.x, resolution.y, TextureFormat.RGBA32, -1, true);
             texture.wrapMode = TextureWrapMode.Clamp;
+            
             // FilterMode.Point to get checkerboard pattern
             texture.filterMode = FilterMode.Point;
             rect = new Rect(position.x, position.y, resolution.x, resolution.y);
@@ -47,13 +51,15 @@ namespace _Scripts.Helper
             _renderer.enabled = true;
         }
 
+        /*
+         * Update the map
+         */
         public void UpdateMapDisplay(int[,] valueMap)
         {
             int mapWidth = valueMap.GetLength(0);
             int mapHeight = valueMap.GetLength(1);
 
             // check valueMap and Sprite dimensions
-
             for (int x = 0; x < mapWidth; x++)
             {
                 for (int y = 0; y < mapHeight; y++)

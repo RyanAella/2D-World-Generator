@@ -41,10 +41,10 @@ namespace _Scripts.old
                 {
                     // generate new cell
                     Cell cell = new Cell(x, y);
-                    cell.cellIndex = new Vector2Int(x, y);
+                    cell.CellIndex = new Vector2Int(x, y);
 
                     // determine if cell is in- or outdoors
-                    cell.indoors = _valueMap[x, y] == 1;
+                    cell.Indoors = _valueMap[x, y] == 1;
 
                     // add cell to cells
                     _cells[x, y] = cell;

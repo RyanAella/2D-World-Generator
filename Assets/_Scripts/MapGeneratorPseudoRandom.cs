@@ -30,7 +30,7 @@ namespace _Scripts
         [SerializeField] private AssetGenerationSettings assetGenerationSettings;
 
         // For the use of OnValidate()
-        private bool _scriptLoaded = false;
+        private bool _scriptLoaded;
 
         // For Debugging
         // private CellDebugger _debugger;

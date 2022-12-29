@@ -4,12 +4,16 @@ using UnityEngine.Tilemaps;
 
 namespace _Scripts.CellGeneration
 {
+    /*
+     * This class shows the value of a cell and its neighbouring cells
+     */
     public class CellDebugger
     {
         private readonly Tilemap _tilemap;
 
         private const float PixelPerUnit = 3f;
-        
+
+        // The cell types
         private enum CellType
         {
             Owned,
@@ -24,38 +28,39 @@ namespace _Scripts.CellGeneration
                 Debug.LogError("Parent for CellDebugTilemap has no Grid Component!");
                 return;
             }
-            
+
             _tilemap = GameObject.Instantiate(Resources.Load("Prefabs/CellDebugTilemap"), root.transform.position,
                 Quaternion.identity, root.transform).GetComponent(typeof(Tilemap)) as Tilemap;
         }
 
+        /*
+         * Plot the cell and its neighbours
+         */
         public void PlotNeighbours(Cell cell)
         {
-            if (cell.neighbours.Count <= 0)
+            if (cell.Neighbours.Count <= 0)
             {
                 Debug.LogWarning("Cell has no Neighbours set!");
                 return;
             }
-            
-            // Draw center cell
-            DrawTile(cell.cellIndex, CellType.Owned);
 
-            foreach (var neighbour in cell.neighbours)
+            // Draw center cell
+            DrawTile(cell.CellIndex, CellType.Owned);
+
+            foreach (var neighbour in cell.Neighbours)
             {
-                if (neighbour.indoors == cell.indoors)
-                {
-                    DrawTile(neighbour.cellIndex, CellType.Similar);
-                }
-                else
-                {
-                    DrawTile(neighbour.cellIndex, CellType.Different);
-                }
+                DrawTile(neighbour.CellIndex,
+                    neighbour.Indoors == cell.Indoors ? CellType.Similar : CellType.Different);
             }
         }
 
+        /*
+         * Draw the needed tile
+         */
         private void DrawTile(int xPos, int yPos, CellType type)
         {
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
+
             // create texture and rect for Sprite
             Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, -1, true);
             texture.wrapMode = TextureWrapMode.Clamp;
@@ -66,7 +71,7 @@ namespace _Scripts.CellGeneration
             tempTile.sprite = Sprite.Create(texture, rect, Vector2.up, PixelPerUnit);
 
             var color = Color.clear;
-            
+
             switch (type)
             {
                 case CellType.Owned:
@@ -79,12 +84,16 @@ namespace _Scripts.CellGeneration
                     color = Color.blue;
                     break;
             }
+
             tempTile.sprite.texture.SetPixel(0, 0, color);
             tempTile.sprite.texture.Apply();
 
             _tilemap.SetTile(new Vector3Int(xPos, yPos, 0), tempTile);
         }
-        
+
+        /*
+         * Draw the needed tile
+         */
         private void DrawTile(Vector2Int cellPos, CellType type)
         {
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
@@ -98,7 +107,7 @@ namespace _Scripts.CellGeneration
             tempTile.sprite = Sprite.Create(texture, rect, Vector2.up, PixelPerUnit);
 
             var color = Color.clear;
-            
+
             switch (type)
             {
                 case CellType.Owned:
@@ -111,6 +120,7 @@ namespace _Scripts.CellGeneration
                     color = Color.blue;
                     break;
             }
+
             tempTile.sprite.texture.SetPixel(0, 0, color);
             tempTile.sprite.texture.Apply();
 

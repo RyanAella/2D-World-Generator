@@ -15,7 +15,7 @@ namespace _Scripts._GradientNoise
         // trees, bushes
         [Range(1, 100)] public int treePercentage;
         [Range(1, 100)] public int bushPercentage;
-        [Range(1, 100)] public int grasPercentage;
+        [Range(1, 100)] public int grassPercentage;
     }
 
     /**
@@ -38,9 +38,9 @@ namespace _Scripts._GradientNoise
             _indoorCells = new List<Cell>();
             _outdoorCells = new List<Cell>();
 
-            // Needed to create the Wood Biom (outdoors)
+            // Needed to create the Woods Biom (outdoors)
             System.Random prng = new System.Random(outdoorBiomSetting.GetSeed().GetHashCode());
-            
+
             // Generate CellMap for indoor/outdoor
             for (int x = 0; x < resolution.x; x++)
             {
@@ -53,12 +53,12 @@ namespace _Scripts._GradientNoise
 
                     if (val == 1)
                     {
-                        cell.indoors = true;
+                        cell.Indoors = true;
                         _indoorCells.Add(cell);
                     }
                     else
                     {
-                        cell.indoors = false;
+                        cell.Indoors = false;
                         _outdoorCells.Add(cell);
                     }
 
@@ -69,48 +69,41 @@ namespace _Scripts._GradientNoise
             // mountain layer generation
             foreach (var cell in _indoorCells)
             {
-                // all indoor cells are currently cave
-                cell.biom = Biom.Cave;
+                // all indoor cells are cave
+                cell.Biom = Biom.Cave;
 
-                // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
-                var val = ValueGenerator.Evaluate(cell.cellIndex.x, cell.cellIndex.y, mountainLayerSettings);
+                // Can be generated with Open Simplex Noise, Perlin Noise
+                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
 
-                if (val == 1)
-                {
-                    // cell is massive rock
-                    cell.Asset = new CellAsset(CellAsset.AssetType.MassiveRock);
-                }
-                else
-                {
-                    // cell is cavity
-                    cell.Asset = new CellAsset(CellAsset.AssetType.Cavity);
-                }
+                cell.Asset = val == 1
+                    ? new CellAsset(CellAsset.AssetType.MassiveRock)
+                    : new CellAsset(CellAsset.AssetType.Cavity);
             }
 
             // open terrain layer generation
             foreach (var cell in _outdoorCells)
             {
-                // Can be generated with Pseudo Random, Open Simplex Noise, Perlin Noise
-                var val = ValueGenerator.Evaluate(cell.cellIndex.x, cell.cellIndex.y, outdoorBiomSetting);
+                // Can be generated with Open Simplex Noise, Perlin Noise
+                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
 
                 if (val == 1)
                 {
-                    // cell is Meadow
-                    cell.biom = Biom.Meadows;
+                    // cell is Meadows
+                    cell.Biom = Biom.Meadows;
                 }
                 else
                 {
                     // cell is Woods
-                    cell.biom = Biom.Woods;
+                    cell.Biom = Biom.Woods;
 
                     var value = prng.Next(101);
                     var trees = assetGenerationSettings.treePercentage;
                     var bushes = assetGenerationSettings.bushPercentage;
-                    var gras = assetGenerationSettings.grasPercentage;
+                    var gras = assetGenerationSettings.grassPercentage;
 
                     if (trees + bushes + gras > 100)
                     {
-                        Debug.LogError("More than 100% Trees and Bushes.");
+                        Debug.LogError("More than 100% Assets.");
                     }
                     else
                     {
@@ -125,9 +118,9 @@ namespace _Scripts._GradientNoise
                     }
                 }
             }
-            
+
             // Get the values of the neighbours
-            // If one or more neighbours is different from the current cell, make the current cell a wall
+            // If one or more neighbours are different from the current cell, make the current cell a wall
             foreach (var cell in _indoorCells)
             {
                 // get the coordinates of all 8 neighbours
@@ -135,24 +128,24 @@ namespace _Scripts._GradientNoise
                 {
                     for (int y = -1; y <= 1; y++)
                     {
-                        int xPos = cell.cellIndex.x + x;
-                        int yPos = cell.cellIndex.y + y;
-            
+                        int xPos = cell.CellIndex.x + x;
+                        int yPos = cell.CellIndex.y + y;
+
                         // skip the incoming cell, and cell coordinates that are not in the map
-                        if ((xPos == cell.cellIndex.x && yPos == cell.cellIndex.y) || xPos < 0 || yPos < 0 ||
+                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {
                             continue;
                         }
-            
-                        bool neighbourVal = _cellMap[xPos, yPos].indoors;
+
+                        var neighbourVal = _cellMap[xPos, yPos].Indoors;
                         var neighbourAsset = _cellMap[xPos, yPos].Asset;
-                        
+
                         if (neighbourVal == false)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
-                        
+
                         if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
                             neighbourAsset.Type == CellAsset.AssetType.Cavity)
                         {
