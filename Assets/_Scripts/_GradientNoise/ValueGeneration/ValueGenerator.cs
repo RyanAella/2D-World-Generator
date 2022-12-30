@@ -79,7 +79,7 @@ namespace _Scripts._GradientNoise.ValueGeneration
 
                     OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(settings.GetSeed().GetHashCode());
                     threshold = Mathf.Lerp(-1.0f, 1.0f, (float)settings.thresholdPercentage / 100);
-                    noiseValue = (float)openSimplexNoise.Evaluate(sampleX, y * sampleY);
+                    noiseValue = (float)openSimplexNoise.Evaluate(sampleX, sampleY);
                     break;
 
                 default:
