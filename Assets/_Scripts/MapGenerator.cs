@@ -1,7 +1,7 @@
 using _Scripts._GradientNoise;
-using _Scripts._GradientNoise.TilemapGeneration;
 using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.TilemapGeneration;
 using UnityEngine;
 
 namespace _Scripts
@@ -31,7 +31,7 @@ namespace _Scripts
         [SerializeField] private AssetGenerationSettings assetGenerationSettings;
 
         // For the use of OnValidate()
-        private bool _scriptLoaded = false;checkout
+        private bool _scriptLoaded = false;
 
         // For Debugging
         // private CellDebugger _debugger;

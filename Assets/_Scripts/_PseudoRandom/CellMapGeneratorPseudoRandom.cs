@@ -25,6 +25,7 @@ namespace _Scripts._PseudoRandom
     {
         // general
         [Header("General")] [Range(0, 100)] public int thresholdPercentage = 45;
+        [Range(0, 100)] public int similarNeighboursPercentage = 45;
 
         // seed
         [Header("Seed")] public bool useRandomSeed = true;
@@ -123,7 +124,7 @@ namespace _Scripts._PseudoRandom
             }
 
             // Smooth the map and return it
-            return SmoothCellMap(_cellMap, baseLayerSettings, resolution);
+            return SmoothCellMap(_cellMap, baseLayerSettings, resolution, baseLayerSettings.similarNeighboursPercentage);
         }
 
         /*
@@ -248,7 +249,7 @@ namespace _Scripts._PseudoRandom
          * Smooth the Cell Map and apply the rules
          */
         private static Cell[,] SmoothCellMap(Cell[,] cellMap, MapGenerationSettings settings,
-            Vector2Int resolution)
+            Vector2Int resolution, int similarNeighboursPercentage)
         {
             if (cellMap == null)
             {
@@ -266,7 +267,7 @@ namespace _Scripts._PseudoRandom
                 {
                     for (int y = 0; y < yDimension; y++)
                     {
-                        tempCellMap[x, y] = ApplyFloorRules(cellMap, cellMap[x, y], resolution);
+                        tempCellMap[x, y] = ApplyFloorRules(cellMap, cellMap[x, y], resolution, similarNeighboursPercentage);
                     }
                 }
 
@@ -281,13 +282,13 @@ namespace _Scripts._PseudoRandom
          * Apply the rule to the given cell
          */
         private static Cell ApplyFloorRules(Cell[,] cellMap, Cell cell,
-            Vector2Int resolution)
+            Vector2Int resolution, int similarNeighboursPercentage)
         {
             Cell tempCell = cell;
 
             int neighbours = GetSimilarNeighbours(cellMap, cell, resolution);
 
-            if (neighbours >= 4)
+            if (neighbours >= similarNeighboursPercentage)
             {
                 tempCell.Indoors = cell.Indoors;
             }

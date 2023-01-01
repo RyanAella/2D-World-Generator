@@ -1,6 +1,18 @@
 ﻿# Changelog
 
 
+## [1.1.0] - 2023-01-01
+## Added
+- ScriptableObjects with List<Tile> for each AssetType and the Bioms
+
+
+## [1.0.1] - 2022-12-30
+[RELEASE]
+
+## Changed
+- Minor Typos
+
+
 ## [0.10.1] - 2022-12-28
 ## Added
 - Entire generation process in Pseudo Random

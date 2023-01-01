@@ -1,6 +1,6 @@
-using _Scripts._GradientNoise.TilemapGeneration;
 using _Scripts._PseudoRandom;
 using _Scripts.CellGeneration;
+using _Scripts.TilemapGeneration;
 using UnityEngine;
 
 namespace _Scripts

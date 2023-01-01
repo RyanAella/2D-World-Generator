@@ -1,6 +1,7 @@
 ﻿# ToDo Next
 
 - [ ] **Dokumentation**
+
 - [ ] Asset Types mit Funktion ?
   - [ ] collidable
     - [ ] is trigger true - durchlaufen
@@ -11,10 +12,15 @@
   - [ ] collidable interactable
     - [ ] is trigger true - durchlaufen
     - [ ] is trigger false - collission (abprallen)
-- [ ] Sprite Assets
-  - [x] Trees (27.12.2022)
-  - [ ] WoodsFloor
-  - [ ] Add randomly different Sprites
+
+- [ ] Für jede Zelle Terrain Type bestimmen
+  - [x] Meadows
+  - [x] Woods
+  - [x] StoneCave
+  - [ ] Settlement
+    - [ ] Village
+    - [ ] Fields
+  - [ ] Water
 
 
 # ToDo
@@ -62,7 +68,10 @@
     - [ ] is trigger true - durchlaufen
     - [ ] is trigger false - collission (abprallen)
   - [x] Prozentsätze für Bäume usw als Nutzereingabe  (22.12.2022)
-- [ ] Hide in Inspektor:
-  - [ ] SmoothSteps wenn Gradient Noise aktiv ist
 
 - [x] Massiver Fels komplett schwarz (23.12.2022)
+
+- [x] Sprite Assets (01.01.2023)
+  - [x] Trees (27.12.2022)
+  - [x] WoodsFloor (01.01.2023)
+  - [x] Add randomly different Sprites (01.01.2023)
