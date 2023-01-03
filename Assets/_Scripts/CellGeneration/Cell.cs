@@ -104,8 +104,7 @@ namespace _Scripts.CellGeneration
         public List<Cell> Neighbours;
 
         // Tile
-        public Dictionary<TilemapTypes, string> Tiles;
-        public Dictionary<TilemapTypes, Tile> TilePalette;
+        public Dictionary<TilemapTypes, Tile> Tiles;
 
         // The tilemap types
         public enum TilemapTypes
@@ -123,8 +122,7 @@ namespace _Scripts.CellGeneration
             CellIndex = new Vector2Int();
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
-            Tiles = new Dictionary<TilemapTypes, string>();
-            TilePalette = new Dictionary<TilemapTypes, Tile>();
+            Tiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(int x, int y)
@@ -132,8 +130,7 @@ namespace _Scripts.CellGeneration
             CellIndex = new Vector2Int(x, y);
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
-            Tiles = new Dictionary<TilemapTypes, string>();
-            TilePalette = new Dictionary<TilemapTypes, Tile>();
+            Tiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         public Cell(Vector2Int cellPos)
@@ -141,8 +138,7 @@ namespace _Scripts.CellGeneration
             CellIndex = cellPos;
             Neighbours = new List<Cell>();
             Asset = new CellAsset(CellAsset.AssetType.None);
-            Tiles = new Dictionary<TilemapTypes, string>();
-            TilePalette = new Dictionary<TilemapTypes, Tile>();
+            Tiles = new Dictionary<TilemapTypes, Tile>();
         }
 
         /*
@@ -150,13 +146,13 @@ namespace _Scripts.CellGeneration
          */
         public void GenerateTiles(Dictionary<string, TilePaletteScriptableObject> tilePalette)
         {
-            var cave = tilePalette["Cave"].tilePalette;
-            var woods = tilePalette["Woods"].tilePalette;
-            var meadows = tilePalette["Meadows"].tilePalette;
-            var massiveRock = tilePalette["MassiveRock"].tilePalette;
-            var wall = tilePalette["Wall"].tilePalette;
-            var tree = tilePalette["Tree"].tilePalette;
-            var bush = tilePalette["Bush"].tilePalette;
+            var cave = tilePalette["Cave"].tiles;
+            var woods = tilePalette["Woods"].tiles;
+            var meadows = tilePalette["Meadows"].tiles;
+            var massiveRock = tilePalette["MassiveRock"].tiles;
+            var wall = tilePalette["Wall"].tiles;
+            var tree = tilePalette["Tree"].tiles;
+            var bush = tilePalette["Bush"].tiles;
 
             var prngCave = prng.Next(cave.Count);
             var prngWoods = prng.Next(woods.Count);
@@ -169,31 +165,31 @@ namespace _Scripts.CellGeneration
             switch (Biom)
             {
                 case Biom.Cave:
-                    TilePalette.Add(TilemapTypes.BiomLayer, cave[prngCave]);
+                    Tiles.Add(TilemapTypes.BiomLayer, cave[prngCave]);
                     break;
                 case Biom.Meadows:
-                    TilePalette.Add(TilemapTypes.BiomLayer, meadows[prngMeadows]);
+                    Tiles.Add(TilemapTypes.BiomLayer, meadows[prngMeadows]);
                     break;
                 case Biom.Woods:
-                    TilePalette.Add(TilemapTypes.BiomLayer, woods[prngWoods]);
+                    Tiles.Add(TilemapTypes.BiomLayer, woods[prngWoods]);
                     break;
             }
 
             switch (Asset.Type)
             {
                 case CellAsset.AssetType.MassiveRock:
-                    TilePalette.Add(TilemapTypes.MassiveRockLayer, massiveRock[prngRock]);
+                    Tiles.Add(TilemapTypes.MassiveRockLayer, massiveRock[prngRock]);
                     break;
                 case CellAsset.AssetType.Cavity:
                     break;
                 case CellAsset.AssetType.Wall:
-                    TilePalette.Add(TilemapTypes.WallLayer, wall[prngWall]);
+                    Tiles.Add(TilemapTypes.WallLayer, wall[prngWall]);
                     break;
                 case CellAsset.AssetType.Tree:
-                    TilePalette.Add(TilemapTypes.TreeLayer, tree[prngTree]);
+                    Tiles.Add(TilemapTypes.TreeLayer, tree[prngTree]);
                     break;
                 case CellAsset.AssetType.Bush:
-                    TilePalette.Add(TilemapTypes.BushLayer, bush[prngBush]);
+                    Tiles.Add(TilemapTypes.BushLayer, bush[prngBush]);
                     break;
                 case CellAsset.AssetType.None:
                     break;

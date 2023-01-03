@@ -56,24 +56,24 @@ namespace _Scripts
             _scriptLoaded = true;
         }
 
-        private void OnValidate()
-        {
-            if (!_scriptLoaded) return;
-
-            // initialization
-            _cellMapGenerator = new CellMapGenerator();
-            tilemapGenerator.Setup();
-
-            // cell map generation
-            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-                outdoorBiomSettings, assetGenerationSettings);
-
-            // tilemap generation
-            tilemapGenerator.GenerateTilemap(cellMap);
-
-            // For Debugging
-            // _debugger = new CellDebugger(randomGenerator);
-            // _debugger.PlotNeighbours(_cellMap[0,0]);
-        }
+        // private void OnValidate()
+        // {
+        //     if (!_scriptLoaded) return;
+        //
+        //     // initialization
+        //     _cellMapGenerator = new CellMapGenerator();
+        //     tilemapGenerator.Setup();
+        //
+        //     // cell map generation
+        //     Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
+        //         outdoorBiomSettings, assetGenerationSettings);
+        //
+        //     // tilemap generation
+        //     tilemapGenerator.GenerateTilemap(cellMap);
+        //
+        //     // For Debugging
+        //     // _debugger = new CellDebugger(randomGenerator);
+        //     // _debugger.PlotNeighbours(_cellMap[0,0]);
+        // }
     }
 }

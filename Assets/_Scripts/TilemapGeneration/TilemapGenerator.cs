@@ -42,15 +42,16 @@ namespace _Scripts.TilemapGeneration
             _treeTilemap = treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _bushTilemap = bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
 
-            _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>();
-
-            _tilePalettes.Add("Cave", caveScriptableObject);
-            _tilePalettes.Add("Woods", woodsScriptableObject);
-            _tilePalettes.Add("Meadows", meadowsScriptableObject);
-            _tilePalettes.Add("MassiveRock", massiveRockScriptableObject);
-            _tilePalettes.Add("Wall", wallScriptableObject);
-            _tilePalettes.Add("Tree", treeScriptableObject);
-            _tilePalettes.Add("Bush", bushScriptableObject);
+            _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
+            {
+                { "Cave", caveScriptableObject },
+                { "Woods", woodsScriptableObject },
+                { "Meadows", meadowsScriptableObject },
+                { "MassiveRock", massiveRockScriptableObject },
+                { "Wall", wallScriptableObject },
+                { "Tree", treeScriptableObject },
+                { "Bush", bushScriptableObject }
+            };
         }
 
         /**
@@ -71,13 +72,18 @@ namespace _Scripts.TilemapGeneration
             foreach (var cell in cellMap)
             {
                 // if (tempTile == null) continue;
+                
+                Debug.Log(cell.Biom);
+                Debug.Log(cell.Asset);
 
                 cell.GenerateTiles(_tilePalettes);
                 
-                foreach (var tile in cell.TilePalette)
+                foreach (var tile in cell.Tiles)
                 {
                     // tempTile.sprite = Resources.Load(tile.Value) as Sprite;
                     // tempTile.sprite = tile.Value;
+                    
+                    Debug.Log(tile.Key + ": " + tile.Value);
 
                     switch (tile.Key)
                     {

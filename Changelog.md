@@ -1,6 +1,15 @@
 ﻿# Changelog
 
 
+## [1.2.1] - 2023-01-03
+## Changed
+- Added new bushes to TilePalette Bush
+
+## Fixes
+- Wrong Pixels Per Unit for Meadows and Woods Tiles
+- Wrong Pivets for Tree Sprites
+
+
 ## [1.1.0] - 2023-01-01
 ## Added
 - ScriptableObjects with List<Tile> for each AssetType and the Bioms

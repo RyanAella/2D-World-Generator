@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1917aecfb7c999944ac0ef0a576e9d28, type: 3}
   m_Name: TreeTilePalette
   m_EditorClassIdentifier: 
-  tilePalette:
-  - {fileID: 11400000, guid: bb5f38b67fe7a0147abc6b4d4492ca20, type: 2}
-  - {fileID: 11400000, guid: c2708dd8d5c84244b90bc4d224c3ddc6, type: 2}
+  tiles:
   - {fileID: 11400000, guid: 72eba83b892d0e747943d71bd75bd804, type: 2}
+  - {fileID: 11400000, guid: c2708dd8d5c84244b90bc4d224c3ddc6, type: 2}
+  - {fileID: 11400000, guid: bb5f38b67fe7a0147abc6b4d4492ca20, type: 2}
