@@ -8,22 +8,32 @@ using UnityEngine.Tilemaps;
 namespace _Scripts.TilemapGeneration
 {
     /**
-     * This class generates the tilemaps
+     * This class generates the tilemaps.
      */
     [Serializable]
     public class TilemapGenerator
     {
-        [SerializeField] private GameObject biomLayer; // floor base level showing biom color
+        // Floor base level tilemap showing biom color
+        [SerializeField] private GameObject biomLayer;
         private Tilemap _biomTilemap;
-        [SerializeField] private GameObject massiveRockLayer; // tilemap containing massive rock
+        
+        // Tilemap containing massive rock
+        [SerializeField] private GameObject massiveRockLayer; 
         private Tilemap _massiveRockTilemap;
-        [SerializeField] private GameObject wallLayer; // tilemap containing walls
+        
+        // Tilemap containing walls
+        [SerializeField] private GameObject wallLayer; 
         private Tilemap _wallTilemap;
-        [SerializeField] private GameObject treeLayer; // tilemap containing trees
+        
+        // Tilemap containing trees
+        [SerializeField] private GameObject treeLayer; 
         private Tilemap _treeTilemap;
-        [SerializeField] private GameObject bushLayer; // tilemap containing bushes
+        
+        // Tilemap containing bushes
+        [SerializeField] private GameObject bushLayer; 
         private Tilemap _bushTilemap;
         
+        // ScriptableObject lists containing the tiles for each tilemap
         [SerializeField] public TilePaletteScriptableObject caveScriptableObject;
         [SerializeField] public TilePaletteScriptableObject meadowsScriptableObject;
         [SerializeField] public TilePaletteScriptableObject woodsScriptableObject;
@@ -32,16 +42,19 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] public TilePaletteScriptableObject treeScriptableObject;
         [SerializeField] public TilePaletteScriptableObject bushScriptableObject;
 
+        // Dictionary containing all ScriptableObject lists
         private Dictionary<string, TilePaletteScriptableObject> _tilePalettes;
 
         public void Setup()
         {
+            // Getting the tilemap components
             _biomTilemap = biomLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _massiveRockTilemap = massiveRockLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _wallTilemap = wallLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _treeTilemap = treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _bushTilemap = bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
 
+            // Creating the Dictionary
             _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
             {
                 { "Cave", caveScriptableObject },
@@ -55,36 +68,25 @@ namespace _Scripts.TilemapGeneration
         }
 
         /**
-         * Generate the Tilemap
+         * Generate the Tilemap.
          */
         public void GenerateTilemap(Cell[,] cellMap)
         {
+            // Clear all tilemaps
             _biomTilemap.ClearAllTiles();
             _massiveRockTilemap.ClearAllTiles();
             _wallTilemap.ClearAllTiles();
             _treeTilemap.ClearAllTiles();
             _bushTilemap.ClearAllTiles();
-
-            // Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
-
-
-            // foreach cell, TileMapGenerator.GenerateTiles(cell)
+            
             foreach (var cell in cellMap)
             {
-                // if (tempTile == null) continue;
-                
-                Debug.Log(cell.Biom);
-                Debug.Log(cell.Asset);
-
+                // generate the tiles for each cell
                 cell.GenerateTiles(_tilePalettes);
                 
+                // Add the tiles to the tilemaps at cellIndex position
                 foreach (var tile in cell.Tiles)
                 {
-                    // tempTile.sprite = Resources.Load(tile.Value) as Sprite;
-                    // tempTile.sprite = tile.Value;
-                    
-                    Debug.Log(tile.Key + ": " + tile.Value);
-
                     switch (tile.Key)
                     {
                         case Cell.TilemapTypes.BiomLayer:
@@ -107,41 +109,16 @@ namespace _Scripts.TilemapGeneration
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
-                // foreach (var tile in cell.Tiles)
-                // {
-                //     tempTile.sprite = Resources.Load(tile.Value) as Sprite;
-                //
-                //     switch (tile.Key)
-                //     {
-                //         case Cell.TilemapTypes.BiomLayer:
-                //             _biomTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
-                //             break;
-                //         case Cell.TilemapTypes.MassiveRockLayer:
-                //             _massiveRockTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0),
-                //                 tempTile);
-                //             break;
-                //         case Cell.TilemapTypes.WallLayer:
-                //             _wallTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
-                //             break;
-                //         case Cell.TilemapTypes.TreeLayer:
-                //             _treeTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
-                //             break;
-                //         case Cell.TilemapTypes.BushLayer:
-                //             _bushTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tempTile);
-                //             break;
-                //         default:
-                //             throw new ArgumentOutOfRangeException();
-                //     }
-                // }
             }
 
+            // Compress the size of the tilemaps to bounds where tiles exist
             _biomTilemap.CompressBounds();
             _massiveRockTilemap.CompressBounds();
             _wallTilemap.CompressBounds();
             _treeTilemap.CompressBounds();
             _bushTilemap.CompressBounds();
 
+            // Set the tilemaps active
             biomLayer.SetActive(true);
             massiveRockLayer.SetActive(true);
             wallLayer.SetActive(true);

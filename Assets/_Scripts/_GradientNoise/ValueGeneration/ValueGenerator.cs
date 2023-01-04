@@ -19,17 +19,17 @@ namespace _Scripts._GradientNoise.ValueGeneration
     [Serializable] // With this it can be shown in the Inspector
     public class ValueGenerationSettings
     {
-        // general
+        // General
         [Header("General")] public NoiseType noiseType = NoiseType.Perlin;
         [Range(0, 100)] public int thresholdPercentage = 45;
 
-        // seed
+        // Seed
         [Header("Seed")] public bool useRandomSeed = true;
         private bool _seedLocked = false;
         [SerializeField] private string seed = "Hello World!";
         [Range(1000.0f, 1000000.0f)] public float seedScale = 100000.0f;
 
-        // gradient noise settings
+        // Gradient noise settings
         [Header("Gradient Noise")] [Range(0.0f, 1.0f)]
         public float noiseScale = 0.033f;
 
@@ -49,7 +49,7 @@ namespace _Scripts._GradientNoise.ValueGeneration
     }
 
     /**
-     * This class generates a value per cell (x-, y- Coordinate pair)
+     * This class generates a value per cell (x-, y-coordinate pair)
      */
     public static class ValueGenerator
     {
@@ -58,11 +58,13 @@ namespace _Scripts._GradientNoise.ValueGeneration
             float threshold;
             double noiseValue;
 
+            // Check if a random seed is wanted
             if (settings.useRandomSeed)
             {
                 settings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
             }
 
+            // Get the coordinates
             float seedOffset = settings.GetSeed().GetHashCode() / settings.seedScale;
             var sampleX = (x + seedOffset) * settings.noiseScale;
             var sampleY = (y + seedOffset) * settings.noiseScale;

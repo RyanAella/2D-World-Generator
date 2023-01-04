@@ -5,6 +5,9 @@ using UnityEngine.Tilemaps;
 
 namespace _Scripts.ScriptableObjects
 {
+    /**
+     * ScriptableObject to serialize a list of tiles.
+     */
     [CreateAssetMenu]
     [Serializable]
     public class TilePaletteScriptableObject : ScriptableObject

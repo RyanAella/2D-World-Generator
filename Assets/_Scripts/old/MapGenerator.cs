@@ -4,13 +4,16 @@ using UnityEngine;
 
 namespace _Scripts.old
 {
+    /**
+     * This class controls the entire generation process.
+     * All required parameters are collected in it and passed to the corresponding methods.
+     */
     public class MapGenerator : MonoBehaviour
     {
-        // [SerializeField] private int width;
-        // [SerializeField] private int height;
+        // Resolution
         [SerializeField] private Vector2Int resolution = new Vector2Int(256, 144);
 
-        [SerializeField] private int smoothSteps = 5;
+        [SerializeField] private int smoothSteps = 7;
         [Range(0, 100)] [SerializeField] private int indoorsPercentage = 35;
 
         // private properties
@@ -20,33 +23,29 @@ namespace _Scripts.old
 
         void Start()
         {
-            // // init MapDisplay
+            // Initialization
             var mapPos = transform.position;
             _display = new MapDisplay(mapPos, resolution, gameObject);
 
-            // generate valueMap
+            // Generate and display valueMap
             _valueMap = GenerateMap();
             SmoothMap();
             _display.UpdateMapDisplay(_valueMap);
 
-            // init cell array
+            // Initialize cell array
             _cells = new Cell[resolution.x, resolution.y];
-
-            // init random generator
-            System.Random pRandom = new System.Random();
 
             for (int x = 0; x < resolution.x; x++)
             {
                 for (int y = 0; y < resolution.y; y++)
                 {
-                    // generate new cell
+                    // Generate new cell
                     Cell cell = new Cell(x, y);
-                    cell.CellIndex = new Vector2Int(x, y);
 
-                    // determine if cell is in- or outdoors
+                    // Determine if the cell is in- or outdoors
                     cell.Indoors = _valueMap[x, y] == 1;
 
-                    // add cell to cells
+                    // Add the cell to cells
                     _cells[x, y] = cell;
                 }
             }
@@ -54,35 +53,22 @@ namespace _Scripts.old
 
         void Update()
         {
-            // if (Input.GetMouseButtonDown(0))
-            // {
-            //     SmoothMap();
-            //
-            //     _display.UpdateMapDisplay(_valueMap);
-            // }
+            if (Input.GetMouseButtonDown(0))
+            {
+                SmoothMap();
+
+                _display.UpdateMapDisplay(_valueMap);
+            }
         }
 
+        /**
+         * Generate the map.
+         */
         private int[,] GenerateMap()
         {
-            // init result array
+            // Initialize result array
             int[,] result = new int[resolution.x, resolution.y];
             System.Random prng = new System.Random();
-
-            // for (int x = 0; x < resolution.x; x++)
-            // {
-            //     for (int y = 0; y < resolution.y; y++)
-            //     {
-            //         if (x == 0 || x == resolution.x - 1 || y == 0 || y == resolution.y - 1)
-            //         {
-            //             result[x, y] = 1; // Wall
-            //         }
-            //         else
-            //         {
-            //             // Next(n) -> value between inclusive 0 and exclusive n
-            //             result[x, y] = prng.Next(101) < indoorsPercentage ? 1 : 0;
-            //         }
-            //     }
-            // }
 
             for (int x = 0; x < resolution.x; x++)
             {
@@ -96,6 +82,9 @@ namespace _Scripts.old
             return result;
         }
 
+        /**
+         * Smooth the map.
+         */
         private void SmoothMap()
         {
             if (_valueMap == null) return;
@@ -116,26 +105,30 @@ namespace _Scripts.old
             }
         }
 
+        /**
+         * Apply the rules.
+         */
         private int ApplyRules(int xIndex, int yIndex)
         {
-            var neighbours = GetSurroundingWallCount(xIndex, yIndex);
+            var neighbours = GetSimilarNeighboursCount(xIndex, yIndex);
 
-            if (neighbours > 4)
+            switch (neighbours)
             {
-                return 1; // Wall
+                case > 4:
+                    return 1; // Wall
+                case < 4:
+                    return 0; // Empty tile
+                default:
+                    return _valueMap[xIndex, yIndex];
             }
-
-            if (neighbours < 4)
-            {
-                return 0; // Empty tile
-            }
-
-            return _valueMap[xIndex, yIndex];
         }
 
-        private int GetSurroundingWallCount(int xIndex, int yIndex)
+        /**
+         * Get the number of similar neighbours.
+         */
+        private int GetSimilarNeighboursCount(int xIndex, int yIndex)
         {
-            int wallCount = 0;
+            int neighbours = 0;
 
             for (int x = -1; x <= 1; x++)
             {
@@ -149,11 +142,11 @@ namespace _Scripts.old
                         yPos >= resolution.y) continue;
 
                     // increment neighbours if wall
-                    if (_valueMap[xPos, yPos] == 1) wallCount++;
+                    if (_valueMap[xPos, yPos] == 1) neighbours++;
                 }
             }
 
-            return wallCount;
+            return neighbours;
         }
     }
 }

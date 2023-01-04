@@ -30,6 +30,9 @@ namespace _Scripts._GradientNoise
         private List<Cell> _indoorCells;
         private List<Cell> _outdoorCells;
 
+        /**
+         * Generate a CellMap with the given settings.
+         */
         public Cell[,] GenerateCellMap(Vector2Int resolution, ValueGenerationSettings baseLayerSettings,
             ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSetting,
             AssetGenerationSettings assetGenerationSettings)
@@ -66,10 +69,10 @@ namespace _Scripts._GradientNoise
                 }
             }
 
-            // mountain layer generation
+            // Mountain layer generation
             foreach (var cell in _indoorCells)
             {
-                // all indoor cells are cave
+                // All indoor cells are cave
                 cell.Biom = Biom.Cave;
             
                 // Can be generated with Open Simplex Noise, Perlin Noise
@@ -80,7 +83,7 @@ namespace _Scripts._GradientNoise
                     : new CellAsset(CellAsset.AssetType.Cavity);
             }
             
-            // open terrain layer generation
+            // Open terrain layer generation
             foreach (var cell in _outdoorCells)
             {
                 // Can be generated with Open Simplex Noise, Perlin Noise
@@ -88,7 +91,7 @@ namespace _Scripts._GradientNoise
             
                 if (val == 1)
                 {
-                    // cell is Meadows
+                    // Cell is Meadows
                     cell.Biom = Biom.Meadows;
                 }
                 else
@@ -123,7 +126,7 @@ namespace _Scripts._GradientNoise
             // If one or more neighbours are different from the current cell, make the current cell a wall
             foreach (var cell in _indoorCells)
             {
-                // get the coordinates of all 8 neighbours
+                // Get the coordinates of all 8 neighbours
                 for (int x = -1; x <= 1; x++)
                 {
                     for (int y = -1; y <= 1; y++)
@@ -131,7 +134,7 @@ namespace _Scripts._GradientNoise
                         int xPos = cell.CellIndex.x + x;
                         int yPos = cell.CellIndex.y + y;
             
-                        // skip the incoming cell, and cell coordinates that are not in the map
+                        // Skip the incoming cell, and cell coordinates that are not in the map
                         if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {

@@ -8,10 +8,10 @@ namespace _Scripts._PseudoRandom
     /**
      * This class stores the parameters for each generation step.
      */
-    [Serializable] // With this it can be showed in the Inspector
+    [Serializable] // With this it can be shown in the Inspector
     public class AssetGenerationSettings
     {
-        // trees, bushes, grass
+        // Trees, bushes, grass
         [Range(1, 100)] public int treePercentage;
         [Range(1, 100)] public int bushPercentage;
         [Range(1, 100)] public int grassPercentage;
@@ -20,22 +20,22 @@ namespace _Scripts._PseudoRandom
     /**
      * This class stores the parameters for each generation step.
      */
-    [Serializable] // With this it can be showed in the Inspector
+    [Serializable] // With this it can be shown in the Inspector
     public class MapGenerationSettings
     {
-        // general
+        // General
         [Header("General")] [Range(0, 100)] public int thresholdPercentage = 45;
         [Range(0, 100)] public int similarNeighboursPercentage = 45;
 
-        // seed
+        // Seed
         [Header("Seed")] public bool useRandomSeed = true;
         private bool _seedLocked;
         [SerializeField] private string seed = "Hello World!";
 
-        // pseudo random settings
+        // Pseudo random settings
         [Header("Pseudo Random")] public int smoothSteps = 7;
 
-        // Seed can only be changed if there is no seed
+        // Seed can only be changed if there is no seed.
         public void SetSeed(string inSeed)
         {
             if (!_seedLocked)
@@ -63,6 +63,7 @@ namespace _Scripts._PseudoRandom
         private List<Cell> _indoorCells;
         private List<Cell> _outdoorCells;
 
+        // Generate the map with the given settings
         public Cell[,] GenerateCellMap(Vector2Int resolution, MapGenerationSettings baseLayerSettings,
             MapGenerationSettings mountainLayerSettings, MapGenerationSettings outdoorBiomSettings,
             AssetGenerationSettings assetGenerationSettings)
@@ -71,6 +72,7 @@ namespace _Scripts._PseudoRandom
             _indoorCells = new List<Cell>();
             _outdoorCells = new List<Cell>();
 
+            // Check if random seeds are wanted
             if (baseLayerSettings.useRandomSeed)
             {
                 baseLayerSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
@@ -86,19 +88,24 @@ namespace _Scripts._PseudoRandom
                 mountainLayerSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
             }
 
+            // Create PRNGs with the given seeds
             System.Random prng = new System.Random(baseLayerSettings.GetSeed().GetHashCode());
             System.Random prng1 = new System.Random(mountainLayerSettings.GetSeed().GetHashCode());
             System.Random prng2 = new System.Random(outdoorBiomSettings.GetSeed().GetHashCode());
 
+            // Generate the base layer and get the in- and outdoor cells
             _cellMap = GenerateBaseLayer(resolution, baseLayerSettings, prng);
             GetInAndOutdoorCells(_cellMap, out _indoorCells, out _outdoorCells, resolution);
 
+            // Generate the mountain/indoor layer
             _cellMap = GenerateMountainLayer(_indoorCells, mountainLayerSettings, prng1);
 
+            // Generate the open terrain/outdoor layer
             _cellMap = GenerateOpenTerrainLayer(_cellMap, _outdoorCells, outdoorBiomSettings,
                 assetGenerationSettings,
                 prng2);
 
+            // Generate walls
             _cellMap = GenerateWalls(resolution, _indoorCells);
 
             return _cellMap;
@@ -136,7 +143,7 @@ namespace _Scripts._PseudoRandom
         {
             foreach (var cell in indoorCells)
             {
-                // all indoor cells are cave
+                // All indoor cells are cave
                 cell.Biom = Biom.Cave;
 
                 cell.Asset = prng.Next(101) < mountainLayerSettings.thresholdPercentage
@@ -161,12 +168,12 @@ namespace _Scripts._PseudoRandom
             {
                 if (prng.Next(101) < outdoorBiomSettings.thresholdPercentage)
                 {
-                    // cell is Meadows
+                    // Cell is Meadows
                     cell.Biom = Biom.Meadows;
                 }
                 else
                 {
-                    // cell is Woods
+                    // Cell is Woods
                     cell.Biom = Biom.Woods;
 
                     var value = prng.Next(101);
@@ -198,7 +205,7 @@ namespace _Scripts._PseudoRandom
         }
 
         /*
-         * Generate the indoor cells containing walls
+         * Generate the indoor cells containing walls.
          */
         private Cell[,] GenerateWalls(Vector2Int resolution, List<Cell> indoorCells)
         {
@@ -206,7 +213,7 @@ namespace _Scripts._PseudoRandom
             // If one or more neighbours is different from the current cell, make the current cell a wall
             foreach (var cell in indoorCells)
             {
-                // get the coordinates of all 8 neighbours
+                // Get the coordinates of all 8 neighbours
                 for (int x = -1; x <= 1; x++)
                 {
                     for (int y = -1; y <= 1; y++)
@@ -214,7 +221,7 @@ namespace _Scripts._PseudoRandom
                         int xPos = cell.CellIndex.x + x;
                         int yPos = cell.CellIndex.y + y;
 
-                        // skip the incoming cell, and cell coordinates that are not in the map
+                        // Skip the incoming cell, and cell coordinates that are not in the map
                         if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {
@@ -224,13 +231,13 @@ namespace _Scripts._PseudoRandom
                         bool neighbourVal = _cellMap[xPos, yPos].Indoors;
                         var neighbourAsset = _cellMap[xPos, yPos].Asset;
 
-                        // if the neighbour is outdoors the cell becomes a wall
+                        // If the neighbour is outdoors the cell becomes a wall
                         if (neighbourVal == false)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
 
-                        // if the cell is indoors and massive rock and the neighbour is a cavity the cell becomes a wall
+                        // If the cell is indoors and massive rock and the neighbour is a cavity the cell becomes a wall
                         if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
                             neighbourAsset.Type == CellAsset.AssetType.Cavity)
                         {
@@ -246,7 +253,7 @@ namespace _Scripts._PseudoRandom
         }
 
         /*
-         * Smooth the Cell Map and apply the rules
+         * Smooth the cell map and apply the rules.
          */
         private static Cell[,] SmoothCellMap(Cell[,] cellMap, MapGenerationSettings settings,
             Vector2Int resolution, int similarNeighboursPercentage)
@@ -279,7 +286,7 @@ namespace _Scripts._PseudoRandom
 
 
         /*
-         * Apply the rule to the given cell
+         * Apply the rule to the given cell.
          */
         private static Cell ApplyFloorRules(Cell[,] cellMap, Cell cell,
             Vector2Int resolution, int similarNeighboursPercentage)
@@ -356,11 +363,6 @@ namespace _Scripts._PseudoRandom
         //         }
         //     }
         //
-        //     Debug.Log("trees: " + trees);
-        //     Debug.Log("bush: " + bush);
-        //     Debug.Log("nothing: " + nothing);
-        //
-        //
         //     if (neighbours >= 4)
         //     {
         //         tempCell.Asset = cell.Asset;
@@ -399,7 +401,7 @@ namespace _Scripts._PseudoRandom
 
 
         /*
-         * Get the number of similar neighbours
+         * Get the number of similar neighbours.
          */
         private static int GetSimilarNeighbours(Cell[,] cellMap, Cell tempCell,
             Vector2Int resolution)
@@ -407,7 +409,7 @@ namespace _Scripts._PseudoRandom
             var myVal = tempCell.Indoors;
             int similarNeighbourCount = 0;
 
-            // get the coordinates of all 8 neighbours
+            // Get the coordinates of all 8 neighbours
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
@@ -415,7 +417,7 @@ namespace _Scripts._PseudoRandom
                     int xPos = tempCell.CellIndex.x + x;
                     int yPos = tempCell.CellIndex.y + y;
 
-                    // skip the incoming cell, and cell coordinates that are not in the map
+                    // Skip the incoming cell, and cell coordinates that are not in the map
                     if ((xPos == tempCell.CellIndex.x && yPos == tempCell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                         xPos >= resolution.x || yPos >= resolution.y)
                     {
@@ -435,7 +437,7 @@ namespace _Scripts._PseudoRandom
         }
 
         /*
-         * Add all indoor cells to the indoorCells list and all outdoor cells to the outdoorCells list
+         * Add all indoor cells to the indoorCells list and all outdoor cells to the outdoorCells list.
          */
         private static void GetInAndOutdoorCells(Cell[,] cellMap, out List<Cell> indoorCells,
             out List<Cell> outdoorCells, Vector2Int resolution)

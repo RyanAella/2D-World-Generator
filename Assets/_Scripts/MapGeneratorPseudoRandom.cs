@@ -11,21 +11,22 @@ namespace _Scripts
      */
     public class MapGeneratorPseudoRandom : MonoBehaviour
     {
-        //resolution default 16:9
+        // Resolution: default 16:9
         [SerializeField] private Vector2Int resolution = new(128, 72);
 
+        // Script access
         private CellMapGeneratorPseudoRandom _cellMapGeneratorPseudoRandom;
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
-        // Settings for the layer determining if a tile is in or outdoors
+        // Settings for the base layer determining if a tile is in or outdoors
         [SerializeField] private MapGenerationSettings baseLayerSettings;
 
         // Settings for determining if an indoor tile is massive rock or a cavity
         [SerializeField] private MapGenerationSettings mountainLayerSettings;
-        
+
         // Settings for determining if an outdoor tile is meadows or woods
         [SerializeField] private MapGenerationSettings outdoorBiomSettings;
-        
+
         // Settings for determining how many percent of woods are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings assetGenerationSettings;
 
@@ -37,14 +38,15 @@ namespace _Scripts
 
         void Start()
         {
-            // initialization
+            // Initialization
             _cellMapGeneratorPseudoRandom = new CellMapGeneratorPseudoRandom();
             tilemapGenerator.Setup();
 
-            // cell map generation
-            Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+            // Cell map generation
+            Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,
+                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
 
-            // tilemap generation
+            // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
             // For Debugging
@@ -58,14 +60,15 @@ namespace _Scripts
         {
             if (!_scriptLoaded) return;
 
-            // initialization
+            // Initialization
             _cellMapGeneratorPseudoRandom = new CellMapGeneratorPseudoRandom();
             tilemapGenerator.Setup();
 
-            // cell map generation
-            Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+            // Cell map generation
+            Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,
+                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
 
-            // tilemap generation
+            // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
             // For Debugging

@@ -12,13 +12,14 @@ namespace _Scripts
      */
     public class MapGenerator : MonoBehaviour
     {
-        //resolution default 16:9
+        // Resolution: default 16:9
         [SerializeField] private Vector2Int resolution = new(128, 72);
 
+        // Script access
         private CellMapGenerator _cellMapGenerator;
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
-        // Settings for the layer determining if a tile is in or outdoors
+        // Settings for the base layer determining if a tile is in or outdoors
         [SerializeField] private ValueGenerationSettings baseLayerSettings;
 
         // Settings for determining if an indoor tile is massive rock or a cavity
@@ -38,15 +39,15 @@ namespace _Scripts
 
         void Start()
         {
-            // initialization
+            // Initialization
             _cellMapGenerator = new CellMapGenerator();
             tilemapGenerator.Setup();
 
-            // cell map generation
+            // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
                 mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
 
-            // tilemap generation
+            // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
             // For Debugging
@@ -56,24 +57,24 @@ namespace _Scripts
             _scriptLoaded = true;
         }
 
-        // private void OnValidate()
-        // {
-        //     if (!_scriptLoaded) return;
-        //
-        //     // initialization
-        //     _cellMapGenerator = new CellMapGenerator();
-        //     tilemapGenerator.Setup();
-        //
-        //     // cell map generation
-        //     Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-        //         outdoorBiomSettings, assetGenerationSettings);
-        //
-        //     // tilemap generation
-        //     tilemapGenerator.GenerateTilemap(cellMap);
-        //
-        //     // For Debugging
-        //     // _debugger = new CellDebugger(randomGenerator);
-        //     // _debugger.PlotNeighbours(_cellMap[0,0]);
-        // }
+        private void OnValidate()
+        {
+            if (!_scriptLoaded) return;
+        
+            // Initialization
+            _cellMapGenerator = new CellMapGenerator();
+            tilemapGenerator.Setup();
+        
+            // Cell map generation
+            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
+                outdoorBiomSettings, assetGenerationSettings);
+        
+            // Tilemap generation
+            tilemapGenerator.GenerateTilemap(cellMap);
+        
+            // For Debugging
+            // _debugger = new CellDebugger(randomGenerator);
+            // _debugger.PlotNeighbours(_cellMap[0,0]);
+        }
     }
 }
