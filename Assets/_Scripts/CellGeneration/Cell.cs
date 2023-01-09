@@ -34,7 +34,8 @@ namespace _Scripts.CellGeneration
             Cavity,
             Wall,
             Tree,
-            Bush
+            Bush, 
+            Water
         }
 
         // The cell asset and its values
@@ -78,6 +79,12 @@ namespace _Scripts.CellGeneration
                     // Interactable = false;
                     // CollidableInteractable = false;
                     break;
+                case AssetType.Water:
+                    Type = type;
+                    // Collidable = true;
+                    // Interactable = false;
+                    // CollidableInteractable = false;
+                    break;
             }
         }
     }
@@ -112,7 +119,8 @@ namespace _Scripts.CellGeneration
             MassiveRockLayer,
             WallLayer,
             TreeLayer,
-            BushLayer
+            BushLayer,
+            WaterLayer
         }
 
         // Constructor
@@ -146,6 +154,7 @@ namespace _Scripts.CellGeneration
             var wall = tilePalette["Wall"].tiles;
             var tree = tilePalette["Tree"].tiles;
             var bush = tilePalette["Bush"].tiles;
+            var water = tilePalette["Water"].tiles;
 
             // Load the tiles randomly from the list
             var prngCave = _prng.Next(cave.Count);
@@ -155,6 +164,7 @@ namespace _Scripts.CellGeneration
             var prngWall = _prng.Next(wall.Count);
             var prngTree = _prng.Next(tree.Count);
             var prngBush = _prng.Next(bush.Count);
+            var prngWater = _prng.Next(water.Count);
 
             // Add the Biom tile to a dictionary
             switch (Biom)
@@ -186,6 +196,9 @@ namespace _Scripts.CellGeneration
                     break;
                 case CellAsset.AssetType.Bush:
                     Tiles.Add(TilemapTypes.BushLayer, bush[prngBush]);
+                    break;
+                case CellAsset.AssetType.Water:
+                    Tiles.Add(TilemapTypes.WaterLayer, water[prngWater]);
                     break;
                 case CellAsset.AssetType.None:
                     break;

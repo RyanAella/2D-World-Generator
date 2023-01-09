@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
 using _Scripts.ScriptableObjects;
+using _Scripts.Settings;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using ValueGenerationSettings = _Scripts.Settings.ValueGenerationSettings;
 
 namespace _Scripts.TilemapGeneration
 {
@@ -33,6 +36,10 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] private GameObject bushLayer; 
         private Tilemap _bushTilemap;
         
+        // Tilemap containing water
+        [SerializeField] private GameObject waterLayer; 
+        private Tilemap _waterTilemap;
+        
         // ScriptableObject lists containing the tiles for each tilemap
         [SerializeField] public TilePaletteScriptableObject caveScriptableObject;
         [SerializeField] public TilePaletteScriptableObject meadowsScriptableObject;
@@ -41,10 +48,23 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] public TilePaletteScriptableObject wallScriptableObject;
         [SerializeField] public TilePaletteScriptableObject treeScriptableObject;
         [SerializeField] public TilePaletteScriptableObject bushScriptableObject;
+        [SerializeField] public TilePaletteScriptableObject waterScriptableObject;
+        // [SerializeField] private List<TilePaletteScriptableObject> _tilePaletteScriptableObjects;
 
         // Dictionary containing all ScriptableObject lists
         private Dictionary<string, TilePaletteScriptableObject> _tilePalettes;
 
+        // private Dictionary<string, Tilemap> tilemaps;
+
+        // public void Setup(GameObject gameObject, List<ValueGenerationSettings> valueGenerationSettings, List<AssetGenerationSettings> assetGenerationSettings)
+        // {
+        //     foreach (var setting in valueGenerationSettings)
+        //     {
+        //         var tilemap = Resources.Load("Prefabs/Tilemap.prefab") as Tilemap;
+        //         tilemaps.Add(setting.name, tilemap);
+        //     }
+        // }
+        
         public void Setup()
         {
             // Getting the tilemap components
@@ -53,7 +73,8 @@ namespace _Scripts.TilemapGeneration
             _wallTilemap = wallLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _treeTilemap = treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _bushTilemap = bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-
+            _waterTilemap = waterLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+        
             // Creating the Dictionary
             _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
             {
@@ -63,7 +84,8 @@ namespace _Scripts.TilemapGeneration
                 { "MassiveRock", massiveRockScriptableObject },
                 { "Wall", wallScriptableObject },
                 { "Tree", treeScriptableObject },
-                { "Bush", bushScriptableObject }
+                { "Bush", bushScriptableObject },
+                { "Water", waterScriptableObject}
             };
         }
 
@@ -78,6 +100,7 @@ namespace _Scripts.TilemapGeneration
             _wallTilemap.ClearAllTiles();
             _treeTilemap.ClearAllTiles();
             _bushTilemap.ClearAllTiles();
+            _waterTilemap.ClearAllTiles();
             
             foreach (var cell in cellMap)
             {
@@ -105,6 +128,9 @@ namespace _Scripts.TilemapGeneration
                         case Cell.TilemapTypes.BushLayer:
                             _bushTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
                             break;
+                        case Cell.TilemapTypes.WaterLayer:
+                            _waterTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -117,6 +143,7 @@ namespace _Scripts.TilemapGeneration
             _wallTilemap.CompressBounds();
             _treeTilemap.CompressBounds();
             _bushTilemap.CompressBounds();
+            _waterTilemap.CompressBounds();
 
             // Set the tilemaps active
             biomLayer.SetActive(true);
@@ -124,6 +151,7 @@ namespace _Scripts.TilemapGeneration
             wallLayer.SetActive(true);
             treeLayer.SetActive(true);
             bushLayer.SetActive(true);
+            waterLayer.SetActive(true);
         }
     }
 }

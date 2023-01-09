@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using _Scripts._GradientNoise;
 using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.ScriptableObjects;
 using _Scripts.TilemapGeneration;
 using UnityEngine;
 
@@ -21,15 +23,22 @@ namespace _Scripts
 
         // Settings for the base layer determining if a tile is in or outdoors
         [SerializeField] private ValueGenerationSettings baseLayerSettings;
-
+        
         // Settings for determining if an indoor tile is massive rock or a cavity
         [SerializeField] private ValueGenerationSettings mountainLayerSettings;
-
+        
         // Settings for determining if an outdoor tile is meadows or woods
         [SerializeField] private ValueGenerationSettings outdoorBiomSettings;
         
+        // Settings for determining if a meadows tile is water
+        [SerializeField] private ValueGenerationSettings waterLayerSettings;
+        
         // Settings for determining how many percent of woods are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings assetGenerationSettings;
+        
+        // //Settings
+        // [SerializeField] private List<ValueGenerationSettings> _valueGenerationSettings;
+        // [SerializeField] private List<AssetGenerationSettings> _assetGenerationSettings;
 
         // For the use of OnValidate()
         private bool _scriptLoaded = false;
@@ -41,12 +50,15 @@ namespace _Scripts
         {
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
+            // tilemapGenerator.Setup(gameObject, _valueGenerationSettings, _assetGenerationSettings);
             tilemapGenerator.Setup();
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, assetGenerationSettings);
 
+            // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
+            
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
@@ -63,15 +75,18 @@ namespace _Scripts
         
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
+            // tilemapGenerator.Setup(gameObject, _valueGenerationSettings, _assetGenerationSettings);
             tilemapGenerator.Setup();
-        
+
             // Cell map generation
-            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-                outdoorBiomSettings, assetGenerationSettings);
-        
+            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, assetGenerationSettings);
+
+            // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
+            
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
-        
+
             // For Debugging
             // _debugger = new CellDebugger(randomGenerator);
             // _debugger.PlotNeighbours(_cellMap[0,0]);

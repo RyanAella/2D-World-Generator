@@ -24,7 +24,7 @@ namespace _Scripts.Helper
             
             // FilterMode.Point to get checkerboard pattern
             _texture.filterMode = FilterMode.Point;
-            _rect = new Rect(position.x, position.y, resolution.x, resolution.y);
+            _rect = new Rect(0, 0, resolution.x, resolution.y);
 
             for (int x = 0; x < resolution.x; x++)
             {

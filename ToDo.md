@@ -14,13 +14,9 @@
     - [ ] is trigger false - collission (abprallen)
 
 - [ ] Für jede Zelle Terrain Type bestimmen
-  - [x] Meadows
-  - [x] Woods
-  - [x] StoneCave
   - [ ] Settlement
     - [ ] Village
     - [ ] Fields
-  - [ ] Water
 
 
 # ToDo
@@ -51,7 +47,7 @@
   - [ ] Settlement
     - [ ] Village
     - [ ] Fields
-  - [ ] Water
+  - [x] Water (09.01.2023)
 - [x] Different Asset Types on different Tilemaps (24.12.2022)
   - [x] none (24.12.2022)
   - [x] collidable (24.12.2022)
@@ -75,3 +71,5 @@
   - [x] Trees (27.12.2022)
   - [x] WoodsFloor (01.01.2023)
   - [x] Add randomly different Sprites (01.01.2023)
+  - [x] Water
+

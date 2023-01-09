@@ -1,6 +1,14 @@
 ﻿# Changelog
 
 
+## [1.3.0] - 2023-01-09
+## Added
+- Generation of water tiles
+
+## Changed
+- Minor changes in the Pseudo Random generation process
+
+
 ## [1.2.1] - 2023-01-03
 ## Changed
 - Added new bushes to TilePalette Bush
