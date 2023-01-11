@@ -1,9 +1,15 @@
 ﻿# Changelog
 
 
+## [1.4.0] - 2023-01-011
+## Added
+- Generation of water tiles for Pseudo Random
+- Generation of grass (for meadows and woods) and stones (for meadows, woods and cavity)
+
+
 ## [1.3.0] - 2023-01-09
 ## Added
-- Generation of water tiles
+- Generation of water tiles for gradient noise
 
 ## Changed
 - Minor changes in the Pseudo Random generation process

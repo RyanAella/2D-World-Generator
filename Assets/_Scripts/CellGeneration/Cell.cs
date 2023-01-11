@@ -35,6 +35,8 @@ namespace _Scripts.CellGeneration
             Wall,
             Tree,
             Bush, 
+            Grass,
+            Stone,
             Water
         }
 
@@ -79,6 +81,18 @@ namespace _Scripts.CellGeneration
                     // Interactable = false;
                     // CollidableInteractable = false;
                     break;
+                case AssetType.Grass:
+                    Type = type;
+                    // Collidable = false;
+                    // Interactable = false;
+                    // CollidableInteractable = false;
+                    break;
+                case AssetType.Stone:
+                    Type = type;
+                    // Collidable = true;
+                    // Interactable = false;
+                    // CollidableInteractable = false;
+                    break;
                 case AssetType.Water:
                     Type = type;
                     // Collidable = true;
@@ -120,6 +134,8 @@ namespace _Scripts.CellGeneration
             WallLayer,
             TreeLayer,
             BushLayer,
+            GrassLayer,
+            StoneLayer,
             WaterLayer
         }
 
@@ -154,8 +170,10 @@ namespace _Scripts.CellGeneration
             var wall = tilePalette["Wall"].tiles;
             var tree = tilePalette["Tree"].tiles;
             var bush = tilePalette["Bush"].tiles;
+            var grass = tilePalette["Grass"].tiles;
+            var stone = tilePalette["Stone"].tiles;
             var water = tilePalette["Water"].tiles;
-
+        
             // Load the tiles randomly from the list
             var prngCave = _prng.Next(cave.Count);
             var prngWoods = _prng.Next(woods.Count);
@@ -164,8 +182,10 @@ namespace _Scripts.CellGeneration
             var prngWall = _prng.Next(wall.Count);
             var prngTree = _prng.Next(tree.Count);
             var prngBush = _prng.Next(bush.Count);
+            var prngGrass = _prng.Next(grass.Count);
+            var prngStone = _prng.Next(stone.Count);
             var prngWater = _prng.Next(water.Count);
-
+        
             // Add the Biom tile to a dictionary
             switch (Biom)
             {
@@ -179,7 +199,7 @@ namespace _Scripts.CellGeneration
                     Tiles.Add(TilemapTypes.BiomLayer, woods[prngWoods]);
                     break;
             }
-
+        
             // Add the Asset tile to the dictionary
             switch (Asset.Type)
             {
@@ -196,6 +216,12 @@ namespace _Scripts.CellGeneration
                     break;
                 case CellAsset.AssetType.Bush:
                     Tiles.Add(TilemapTypes.BushLayer, bush[prngBush]);
+                    break;
+                case CellAsset.AssetType.Grass:
+                    Tiles.Add(TilemapTypes.GrassLayer, grass[prngGrass]);
+                    break;
+                case CellAsset.AssetType.Stone:
+                    Tiles.Add(TilemapTypes.StoneLayer, stone[prngStone]);
                     break;
                 case CellAsset.AssetType.Water:
                     Tiles.Add(TilemapTypes.WaterLayer, water[prngWater]);

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.Helper;
 using _Scripts.ScriptableObjects;
-using _Scripts.Settings;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using ValueGenerationSettings = _Scripts.Settings.ValueGenerationSettings;
 
 namespace _Scripts.TilemapGeneration
 {
@@ -36,6 +34,14 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] private GameObject bushLayer; 
         private Tilemap _bushTilemap;
         
+        // Tilemap containing grass
+        [SerializeField] private GameObject grassLayer; 
+        private Tilemap _grassTilemap;
+        
+        // Tilemap containing stones
+        [SerializeField] private GameObject stoneLayer; 
+        private Tilemap _stoneTilemap;
+        
         // Tilemap containing water
         [SerializeField] private GameObject waterLayer; 
         private Tilemap _waterTilemap;
@@ -48,6 +54,8 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] public TilePaletteScriptableObject wallScriptableObject;
         [SerializeField] public TilePaletteScriptableObject treeScriptableObject;
         [SerializeField] public TilePaletteScriptableObject bushScriptableObject;
+        [SerializeField] public TilePaletteScriptableObject grassScriptableObject;
+        [SerializeField] public TilePaletteScriptableObject stoneScriptableObject;
         [SerializeField] public TilePaletteScriptableObject waterScriptableObject;
         // [SerializeField] private List<TilePaletteScriptableObject> _tilePaletteScriptableObjects;
 
@@ -73,8 +81,10 @@ namespace _Scripts.TilemapGeneration
             _wallTilemap = wallLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _treeTilemap = treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _bushTilemap = bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _grassTilemap = grassLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _stoneTilemap = stoneLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _waterTilemap = waterLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-        
+
             // Creating the Dictionary
             _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
             {
@@ -85,6 +95,8 @@ namespace _Scripts.TilemapGeneration
                 { "Wall", wallScriptableObject },
                 { "Tree", treeScriptableObject },
                 { "Bush", bushScriptableObject },
+                { "Grass", grassScriptableObject },
+                { "Stone", stoneScriptableObject },
                 { "Water", waterScriptableObject}
             };
         }
@@ -100,6 +112,8 @@ namespace _Scripts.TilemapGeneration
             _wallTilemap.ClearAllTiles();
             _treeTilemap.ClearAllTiles();
             _bushTilemap.ClearAllTiles();
+            _grassTilemap.ClearAllTiles();
+            _stoneTilemap.ClearAllTiles();
             _waterTilemap.ClearAllTiles();
             
             foreach (var cell in cellMap)
@@ -128,6 +142,12 @@ namespace _Scripts.TilemapGeneration
                         case Cell.TilemapTypes.BushLayer:
                             _bushTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
                             break;
+                        case Cell.TilemapTypes.GrassLayer:
+                            _grassTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
+                            break;
+                        case Cell.TilemapTypes.StoneLayer:
+                            _stoneTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
+                            break;
                         case Cell.TilemapTypes.WaterLayer:
                             _waterTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
                             break;
@@ -136,21 +156,25 @@ namespace _Scripts.TilemapGeneration
                     }
                 }
             }
-
+        
             // Compress the size of the tilemaps to bounds where tiles exist
             _biomTilemap.CompressBounds();
             _massiveRockTilemap.CompressBounds();
             _wallTilemap.CompressBounds();
             _treeTilemap.CompressBounds();
             _bushTilemap.CompressBounds();
+            _grassTilemap.CompressBounds();
+            _stoneTilemap.CompressBounds();
             _waterTilemap.CompressBounds();
-
+        
             // Set the tilemaps active
             biomLayer.SetActive(true);
             massiveRockLayer.SetActive(true);
             wallLayer.SetActive(true);
             treeLayer.SetActive(true);
             bushLayer.SetActive(true);
+            grassLayer.SetActive(true);
+            stoneLayer.SetActive(true);
             waterLayer.SetActive(true);
         }
     }

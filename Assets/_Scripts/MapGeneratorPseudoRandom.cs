@@ -19,16 +19,26 @@ namespace _Scripts
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
         // Settings for the base layer determining if a tile is in or outdoors
+        [Tooltip("What percentage is indoors.")]
         [SerializeField] private MapGenerationSettings baseLayerSettings;
-
+        
         // Settings for determining if an indoor tile is massive rock or a cavity
+        [Tooltip("What percentage is massive rock.")]
         [SerializeField] private MapGenerationSettings mountainLayerSettings;
-
+        
         // Settings for determining if an outdoor tile is meadows or woods
+        [Tooltip("What percentage is meadows.")]
         [SerializeField] private MapGenerationSettings outdoorBiomSettings;
+        
+        // Settings for determining if a meadows tile is water
+        [Tooltip("What percentage is water.")]
+        [SerializeField] private MapGenerationSettings waterLayerSettings;
 
+        // Settings for determining how many percent of meadows are trees, bushes and gras
+        [SerializeField] private AssetGenerationSettings meadowsAssetSettings;
+        
         // Settings for determining how many percent of woods are trees, bushes and gras
-        [SerializeField] private AssetGenerationSettings assetGenerationSettings;
+        [SerializeField] private AssetGenerationSettings woodsAssetSettings;
 
         // For the use of OnValidate()
         private bool _scriptLoaded;
@@ -44,7 +54,7 @@ namespace _Scripts
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+                 mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
 
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
@@ -66,7 +76,7 @@ namespace _Scripts
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
 
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);

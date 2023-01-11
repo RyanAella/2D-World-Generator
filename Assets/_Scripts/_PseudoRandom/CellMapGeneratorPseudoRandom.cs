@@ -11,10 +11,11 @@ namespace _Scripts._PseudoRandom
     [Serializable] // With this it can be shown in the Inspector
     public class AssetGenerationSettings
     {
-        // Trees, bushes, grass
-        [Range(1, 100)] public int treePercentage;
-        [Range(1, 100)] public int bushPercentage;
-        [Range(1, 100)] public int grassPercentage;
+        // trees, bushes
+        [Range(1, 100)] public int treePercentage = 50;
+        [Range(1, 100)] public int bushPercentage = 30;
+        [Range(1, 100)] public int grassPercentage = 10;
+        [Range(1, 100)] public int stonePercentage = 10;
     }
 
     /**
@@ -34,6 +35,8 @@ namespace _Scripts._PseudoRandom
 
         // Pseudo random settings
         [Header("Pseudo Random")] public int smoothSteps = 7;
+
+        [Header("For Mountain Generation")] public int stonePercentage = 10;
 
         // Seed can only be changed if there is no seed.
         public void SetSeed(string inSeed)
@@ -66,7 +69,8 @@ namespace _Scripts._PseudoRandom
         // Generate the map with the given settings
         public Cell[,] GenerateCellMap(Vector2Int resolution, MapGenerationSettings baseLayerSettings,
             MapGenerationSettings mountainLayerSettings, MapGenerationSettings outdoorBiomSettings,
-            AssetGenerationSettings assetGenerationSettings)
+            MapGenerationSettings waterLayerSettings, AssetGenerationSettings meadowsAssetSettings,
+            AssetGenerationSettings woodsAssetSettings)
         {
             _cellMap = new Cell[resolution.x, resolution.y];
             _indoorCells = new List<Cell>();
@@ -85,28 +89,36 @@ namespace _Scripts._PseudoRandom
 
             if (outdoorBiomSettings.useRandomSeed)
             {
-                mountainLayerSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
+                outdoorBiomSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
+            }
+
+            if (waterLayerSettings.useRandomSeed)
+            {
+                waterLayerSettings.SetSeed(Time.realtimeSinceStartupAsDouble.ToString());
             }
 
             // Create PRNGs with the given seeds
             System.Random prng = new System.Random(baseLayerSettings.GetSeed().GetHashCode());
             System.Random prng1 = new System.Random(mountainLayerSettings.GetSeed().GetHashCode());
             System.Random prng2 = new System.Random(outdoorBiomSettings.GetSeed().GetHashCode());
+            System.Random prng3 = new System.Random(waterLayerSettings.GetSeed().GetHashCode());
 
             // Generate the base layer and get the in- and outdoor cells
             _cellMap = GenerateBaseLayer(resolution, baseLayerSettings, prng);
             GetInAndOutdoorCells(_cellMap, out _indoorCells, out _outdoorCells, resolution);
 
             // Generate the mountain/indoor layer
-            _cellMap = GenerateMountainLayer(_indoorCells, mountainLayerSettings, prng1);
+            _cellMap = GenerateMountainLayer(_cellMap, _indoorCells, mountainLayerSettings, prng1);
 
             // Generate the open terrain/outdoor layer
             _cellMap = GenerateOpenTerrainLayer(_cellMap, _outdoorCells, outdoorBiomSettings,
-                assetGenerationSettings,
-                prng2);
+                meadowsAssetSettings, woodsAssetSettings, prng2);
 
             // Generate walls
-            _cellMap = GenerateWalls(resolution, _indoorCells);
+            _cellMap = GenerateWalls(_cellMap, resolution, _indoorCells);
+
+            // Generate the water layer
+            _cellMap = GenerateWaterLayer(_cellMap, waterLayerSettings, prng3);
 
             return _cellMap;
         }
@@ -131,14 +143,16 @@ namespace _Scripts._PseudoRandom
             }
 
             // Smooth the map and return it
-            return SmoothCellMap(_cellMap, baseLayerSettings, resolution, baseLayerSettings.similarNeighboursPercentage);
+            return SmoothCellMap(_cellMap, baseLayerSettings, resolution,
+                baseLayerSettings.similarNeighboursPercentage);
         }
 
         /*
          * Generate the Mountain (indoors) Layer.
          * This contains the information whether a cell is massive rock or a cavity.
          */
-        private Cell[,] GenerateMountainLayer(List<Cell> indoorCells, MapGenerationSettings mountainLayerSettings,
+        private Cell[,] GenerateMountainLayer(Cell[,] cellMap, List<Cell> indoorCells,
+            MapGenerationSettings mountainLayerSettings,
             System.Random prng)
         {
             foreach (var cell in indoorCells)
@@ -146,14 +160,27 @@ namespace _Scripts._PseudoRandom
                 // All indoor cells are cave
                 cell.Biom = Biom.Cave;
 
-                cell.Asset = prng.Next(101) < mountainLayerSettings.thresholdPercentage
-                    ? new CellAsset(CellAsset.AssetType.MassiveRock)
-                    : new CellAsset(CellAsset.AssetType.Cavity);
+                if (prng.Next(101) < mountainLayerSettings.thresholdPercentage)
+                {
+                    cell.Asset = new CellAsset(CellAsset.AssetType.MassiveRock);
+                }
+                else
+                {
+                    cell.Asset = new CellAsset(CellAsset.AssetType.Cavity);
 
-                _cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
+                    var value = prng.Next(101);
+                    var stone = mountainLayerSettings.stonePercentage;
+
+                    if (value <= stone)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                    }
+                }
+
+                cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
 
-            return _cellMap;
+            return cellMap;
         }
 
         /*
@@ -161,7 +188,8 @@ namespace _Scripts._PseudoRandom
          * This contains the information whether a cell is meadows or woods and whether has trees or bushes.
          */
         private Cell[,] GenerateOpenTerrainLayer(Cell[,] cellMap, List<Cell> outdoorCells,
-            MapGenerationSettings outdoorBiomSettings, AssetGenerationSettings assetGenerationSettings,
+            MapGenerationSettings outdoorBiomSettings, AssetGenerationSettings meadowsAssetSettings,
+            AssetGenerationSettings woodsAssetSettings,
             System.Random prng)
         {
             foreach (var cell in outdoorCells)
@@ -170,18 +198,14 @@ namespace _Scripts._PseudoRandom
                 {
                     // Cell is Meadows
                     cell.Biom = Biom.Meadows;
-                }
-                else
-                {
-                    // Cell is Woods
-                    cell.Biom = Biom.Woods;
 
                     var value = prng.Next(101);
-                    var trees = assetGenerationSettings.treePercentage;
-                    var bushes = assetGenerationSettings.bushPercentage;
-                    var gras = assetGenerationSettings.grassPercentage;
+                    var trees = meadowsAssetSettings.treePercentage;
+                    var bushes = meadowsAssetSettings.bushPercentage;
+                    var grass = meadowsAssetSettings.grassPercentage;
+                    var stone = meadowsAssetSettings.stonePercentage;
 
-                    if (trees + bushes + gras > 100)
+                    if (trees + bushes + grass + stone > 100)
                     {
                         Debug.LogError("More than 100% Trees and Bushes.");
                     }
@@ -195,8 +219,53 @@ namespace _Scripts._PseudoRandom
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
                         }
+                        else if (value <= trees + bushes + grass)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Grass);
+                        }
+                        else if (value <= trees + bushes + grass + stone)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                        }
                     }
                 }
+
+                else
+                {
+                    // Cell is Woods
+                    cell.Biom = Biom.Woods;
+
+                    var value = prng.Next(101);
+                    var trees = woodsAssetSettings.treePercentage;
+                    var bushes = woodsAssetSettings.bushPercentage;
+                    var grass = woodsAssetSettings.grassPercentage;
+                    var stone = woodsAssetSettings.stonePercentage;
+
+                    if (trees + bushes + grass + stone > 100)
+                    {
+                        Debug.LogError("More than 100% Assets.");
+                    }
+                    else
+                    {
+                        if (value <= trees)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Tree);
+                        }
+                        else if (value <= trees + bushes)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
+                        }
+                        else if (value <= trees + bushes + grass)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Grass);
+                        }
+                        else if (value <= trees + bushes + grass + stone)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                        }
+                    }
+                }
+
 
                 cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
@@ -207,7 +276,7 @@ namespace _Scripts._PseudoRandom
         /*
          * Generate the indoor cells containing walls.
          */
-        private Cell[,] GenerateWalls(Vector2Int resolution, List<Cell> indoorCells)
+        private Cell[,] GenerateWalls(Cell[,] cellMap, Vector2Int resolution, List<Cell> indoorCells)
         {
             // Get the values of the neighbours
             // If one or more neighbours is different from the current cell, make the current cell a wall
@@ -246,10 +315,49 @@ namespace _Scripts._PseudoRandom
                     }
                 }
 
-                _cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
+                cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
             }
 
-            return _cellMap;
+            return cellMap;
+        }
+
+        /*
+         * Generate the Mountain (indoors) Layer.
+         * This contains the information whether a cell is massive rock or a cavity.
+         */
+        private Cell[,] GenerateWaterLayer(Cell[,] cellMap, MapGenerationSettings waterLayerSettings,
+            System.Random prng)
+        {
+            foreach (var cell in _cellMap)
+            {
+                if (cell.Biom == Biom.Meadows)
+                {
+                    if (prng.Next(101) < waterLayerSettings.thresholdPercentage)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
+                    }
+                }
+
+                if (cell.Biom == Biom.Woods)
+                {
+                    if (prng.Next(101) < waterLayerSettings.thresholdPercentage)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
+                    }
+                }
+
+                if (cell.Asset.Type == CellAsset.AssetType.Cavity)
+                {
+                    if (prng.Next(101) < waterLayerSettings.thresholdPercentage)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
+                    }
+                }
+
+                cellMap[cell.CellIndex.x, cell.CellIndex.y] = cell;
+            }
+
+            return cellMap;
         }
 
         /*
@@ -274,7 +382,8 @@ namespace _Scripts._PseudoRandom
                 {
                     for (int y = 0; y < yDimension; y++)
                     {
-                        tempCellMap[x, y] = ApplyFloorRules(cellMap, cellMap[x, y], resolution, similarNeighboursPercentage);
+                        tempCellMap[x, y] = ApplyFloorRules(cellMap, cellMap[x, y], resolution,
+                            similarNeighboursPercentage);
                     }
                 }
 

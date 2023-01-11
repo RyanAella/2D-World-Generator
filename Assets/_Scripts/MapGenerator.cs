@@ -22,19 +22,26 @@ namespace _Scripts
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
         // Settings for the base layer determining if a tile is in or outdoors
+        [Tooltip("What percentage is indoors.")]
         [SerializeField] private ValueGenerationSettings baseLayerSettings;
         
         // Settings for determining if an indoor tile is massive rock or a cavity
+        [Tooltip("What percentage is massive rock.")]
         [SerializeField] private ValueGenerationSettings mountainLayerSettings;
         
         // Settings for determining if an outdoor tile is meadows or woods
+        [Tooltip("What percentage is meadows.")]
         [SerializeField] private ValueGenerationSettings outdoorBiomSettings;
         
         // Settings for determining if a meadows tile is water
+        [Tooltip("What percentage is water.")]
         [SerializeField] private ValueGenerationSettings waterLayerSettings;
         
+        // Settings for determining how many percent of meadows are trees, bushes and gras
+        [SerializeField] private AssetGenerationSettings meadowsAssetSettings;
+        
         // Settings for determining how many percent of woods are trees, bushes and gras
-        [SerializeField] private AssetGenerationSettings assetGenerationSettings;
+        [SerializeField] private AssetGenerationSettings woodsAssetSettings;
         
         // //Settings
         // [SerializeField] private List<ValueGenerationSettings> _valueGenerationSettings;
@@ -55,8 +62,8 @@ namespace _Scripts
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, assetGenerationSettings);
-
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
+            
             // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
             
             // Tilemap generation
@@ -80,8 +87,8 @@ namespace _Scripts
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, assetGenerationSettings);
-
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
+            
             // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
             
             // Tilemap generation
