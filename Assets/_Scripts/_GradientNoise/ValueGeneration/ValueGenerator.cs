@@ -74,13 +74,15 @@ namespace _Scripts._GradientNoise.ValueGeneration
             switch (settings.noiseType)
             {
                 case NoiseType.Perlin:
-
+                    
+                    // Interpolate between 0.0 and 1.0 by settings.percentage / 100
                     threshold = Mathf.Lerp(0.0f, 1.0f, (float)settings.percentage / 100);
                     noiseValue = Mathf.PerlinNoise(sampleX, sampleY);
                     break;
 
                 case NoiseType.OpenSimplex:
 
+                    // Interpolate between -1.0 and 1.0 by settings.percentage / 100
                     OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise(settings.GetSeed().GetHashCode());
                     threshold = Mathf.Lerp(-1.0f, 1.0f, (float)settings.percentage / 100);
                     noiseValue = (float)openSimplexNoise.Evaluate(sampleX, sampleY);

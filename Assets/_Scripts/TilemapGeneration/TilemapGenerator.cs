@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _Scripts.CellGeneration;
-using _Scripts.Helper;
-using _Scripts.ScriptableObjects;
+using _Scripts.ScriptableObjects.TilePalettes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -46,8 +45,14 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] private GameObject waterLayer; 
         private Tilemap _waterTilemap;
         
+        // List containing all GameObjects
+        private List<GameObject> _gameObjects;
+
+        // List containing all Tilemaps
+        private List<Tilemap> _tilemaps;
+
         // ScriptableObject lists containing the tiles for each tilemap
-        [SerializeField] public TilePaletteScriptableObject caveScriptableObject;
+        [SerializeField] public TilePaletteScriptableObject mountainScriptableObject;
         [SerializeField] public TilePaletteScriptableObject meadowsScriptableObject;
         [SerializeField] public TilePaletteScriptableObject woodsScriptableObject;
         [SerializeField] public TilePaletteScriptableObject massiveRockScriptableObject;
@@ -57,24 +62,25 @@ namespace _Scripts.TilemapGeneration
         [SerializeField] public TilePaletteScriptableObject grassScriptableObject;
         [SerializeField] public TilePaletteScriptableObject stoneScriptableObject;
         [SerializeField] public TilePaletteScriptableObject waterScriptableObject;
-        // [SerializeField] private List<TilePaletteScriptableObject> _tilePaletteScriptableObjects;
 
         // Dictionary containing all ScriptableObject lists
         private Dictionary<string, TilePaletteScriptableObject> _tilePalettes;
 
-        // private Dictionary<string, Tilemap> tilemaps;
-
-        // public void Setup(GameObject gameObject, List<ValueGenerationSettings> valueGenerationSettings, List<AssetGenerationSettings> assetGenerationSettings)
-        // {
-        //     foreach (var setting in valueGenerationSettings)
-        //     {
-        //         var tilemap = Resources.Load("Prefabs/Tilemap.prefab") as Tilemap;
-        //         tilemaps.Add(setting.name, tilemap);
-        //     }
-        // }
-        
         public void Setup()
         {
+            // Creating the Dictionary
+            _gameObjects = new List<GameObject>()
+            {
+                biomLayer,
+                massiveRockLayer,
+                wallLayer,
+                treeLayer,
+                bushLayer,
+                grassLayer,
+                stoneLayer,
+                waterLayer
+            };
+            
             // Getting the tilemap components
             _biomTilemap = biomLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _massiveRockTilemap = massiveRockLayer.GetComponent(typeof(Tilemap)) as Tilemap;
@@ -84,11 +90,24 @@ namespace _Scripts.TilemapGeneration
             _grassTilemap = grassLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _stoneTilemap = stoneLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             _waterTilemap = waterLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            
+            // Creating the Dictionary
+            _tilemaps = new List<Tilemap>()
+            {
+                _biomTilemap,
+                _massiveRockTilemap,
+                _wallTilemap,
+                _treeTilemap,
+                _bushTilemap,
+                _grassTilemap,
+                _stoneTilemap,
+                _waterTilemap
+            };
 
             // Creating the Dictionary
             _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
             {
-                { "Cave", caveScriptableObject },
+                { "Mountain", mountainScriptableObject },
                 { "Woods", woodsScriptableObject },
                 { "Meadows", meadowsScriptableObject },
                 { "MassiveRock", massiveRockScriptableObject },
@@ -107,14 +126,10 @@ namespace _Scripts.TilemapGeneration
         public void GenerateTilemap(Cell[,] cellMap)
         {
             // Clear all tilemaps
-            _biomTilemap.ClearAllTiles();
-            _massiveRockTilemap.ClearAllTiles();
-            _wallTilemap.ClearAllTiles();
-            _treeTilemap.ClearAllTiles();
-            _bushTilemap.ClearAllTiles();
-            _grassTilemap.ClearAllTiles();
-            _stoneTilemap.ClearAllTiles();
-            _waterTilemap.ClearAllTiles();
+            foreach (var tilemap in _tilemaps)
+            {
+                tilemap.ClearAllTiles();
+            }
             
             foreach (var cell in cellMap)
             {
@@ -158,24 +173,16 @@ namespace _Scripts.TilemapGeneration
             }
         
             // Compress the size of the tilemaps to bounds where tiles exist
-            _biomTilemap.CompressBounds();
-            _massiveRockTilemap.CompressBounds();
-            _wallTilemap.CompressBounds();
-            _treeTilemap.CompressBounds();
-            _bushTilemap.CompressBounds();
-            _grassTilemap.CompressBounds();
-            _stoneTilemap.CompressBounds();
-            _waterTilemap.CompressBounds();
+            foreach (var tilemap in _tilemaps)
+            {
+                tilemap.CompressBounds();
+            }
         
             // Set the tilemaps active
-            biomLayer.SetActive(true);
-            massiveRockLayer.SetActive(true);
-            wallLayer.SetActive(true);
-            treeLayer.SetActive(true);
-            bushLayer.SetActive(true);
-            grassLayer.SetActive(true);
-            stoneLayer.SetActive(true);
-            waterLayer.SetActive(true);
+            foreach (var gameObject in _gameObjects)
+            {
+                gameObject.SetActive(true);
+            }
         }
     }
 }

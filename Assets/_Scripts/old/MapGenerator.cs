@@ -22,7 +22,8 @@ namespace _Scripts.old
      */
     public class MapGenerator : MonoBehaviour
     {
-        [Header("General")] public NoiseType noiseType = NoiseType.PseudoRandom;
+        [Header("General")] 
+        [SerializeField] public NoiseType noiseType;
         [SerializeField] private Vector2Int resolution = new Vector2Int(256, 144);
         [Range(0, 100)] [SerializeField] private int indoorsPercentage = 35;
 
@@ -52,7 +53,6 @@ namespace _Scripts.old
 
             // Generate and display valueMap
             _valueMap = GenerateMap(seed, noiseType, seedScale, noiseScale, indoorsPercentage);
-            // if (noiseType == NoiseType.PseudoRandom) SmoothMap();
             _display.UpdateMapDisplay(_valueMap);
         }
 

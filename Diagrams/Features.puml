@@ -1,0 +1,166 @@
+﻿' @startuml Feature Tree old
+
+' skinparam activity {
+'     Backgroundcolor<<implemented>> LightGreen
+'     Backgroundcolor<<wip>> Orange
+' }
+
+' (*) --> Indoor/Outdoor <<implemented>>
+' if "" then
+'     -left-> Indoor <<implemented>>
+'     if "" then 
+'         --> Mountain <<implemented>>
+'     endif
+'     if "" then
+'         --> MassiveRock <<implemented>>
+'     else
+'         --> Cave <<implemented>>
+'     else
+'         --> Stone <<implemented>>
+'     else
+'         -right-> Water <<wip>>
+'     endif
+' else
+'     -Right-> Outdoor <<implemented>>
+'         if "" then
+'             --> Woods <<implemented>>
+'             if "" then
+'                 -left-> Tree (W) <<implemented>>
+'             else
+'                 --> Bush (W) <<implemented>>
+'             else 
+'                 --> Grass (W) <<implemented>>
+'             else
+'                 --> Stone (W) <<implemented>>
+'             else
+'                 -right-> Water (W) <<wip>>
+'             endif
+'         else 
+'             --> Meadows <<implemented>>
+'             if "" then
+'                 -left-> Tree (M) <<implemented>>
+'             else
+'                 --> Bush (M) <<implemented>>
+'             else 
+'                 --> Grass (M) <<implemented>>
+'             else
+'                 --> Stone (M) <<implemented>>
+'             else
+'                 -right-> Water (M) <<wip>>
+'             endif
+'         else
+'             --> Settlement <<wip>>
+'             if "" then
+'                 --> Village <<wip>>
+'             else
+'                 --> Fields <<wip>>
+'             endif
+'         endif
+' @enduml
+
+@startuml Feature Tree new
+
+<style>
+    activityDiagram {
+        FontStyle bold
+    }
+
+    .Implemented {
+        LineColor Green
+        LineThickness 4
+    }
+
+    .SemiImplemented {
+        LineColor Orange
+        LineThickness 4
+    }
+
+    .Wip {
+        LineColor #FF5555 /' slightly lighter red '/
+        LineThickness 4
+    }
+
+    .Base {
+        BackgroundColor LightGrey
+    }
+
+    .Biom {
+        BackgroundColor YellowGreen
+    }
+
+    .Asset {
+        BackgroundColor Yellow
+    }
+
+</style>
+
+start
+
+<<Implemented>> <<Base>> :Indor/Outdoor;
+split
+    <<Implemented>> <<Base>> :Indoor;
+    <<Implemented>> <<Biom>> :Mountain;
+    split
+        <<Implemented>> <<Asset>> :Massive Rock;
+        detach
+    split again
+        <<Implemented>> <<Asset>> :Cave;
+        detach
+    split again
+        <<Implemented>> <<Asset>> :Stone;
+        detach
+    split again
+        <<SemiImplemented>> <<Asset>> :Water;
+        detach
+    end split
+split again
+    <<Implemented>> <<Base>> :Outdoor;
+    split
+        <<Implemented>> <<Biom>> :Woods;
+        split
+            <<Implemented>> <<Asset>> :Trees;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Bushes;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Stone;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Grass;
+            detach
+        split again
+            <<SemiImplemented>> <<Asset>> :Water;
+            detach
+        end split
+    split again
+        <<Implemented>> <<Biom>> :Meadows;
+        split
+            <<Implemented>> <<Asset>> :Trees;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Bushes;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Stone;
+            detach
+        split again
+            <<Implemented>> <<Asset>> :Grass;
+            detach
+        split again
+            <<SemiImplemented>> <<Asset>> :Water;
+            detach
+        end split        
+    split again
+        <<Wip>> <<Biom>> :Settlement;
+        split
+            <<Wip>> <<Asset>> :Village;
+            detach
+        split again
+            <<Wip>> <<Asset>> :Fields;
+            detach
+        end split
+    end split
+end split
+
+@enduml

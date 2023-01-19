@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using _Scripts._GradientNoise;
 using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
-using _Scripts.ScriptableObjects;
 using _Scripts.TilemapGeneration;
 using UnityEngine;
 
@@ -42,10 +40,6 @@ namespace _Scripts
         
         // Settings for determining how many percent of woods are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings woodsAssetSettings;
-        
-        // //Settings
-        // [SerializeField] private List<ValueGenerationSettings> _valueGenerationSettings;
-        // [SerializeField] private List<AssetGenerationSettings> _assetGenerationSettings;
 
         // For the use of OnValidate()
         private bool _scriptLoaded = false;
@@ -57,15 +51,12 @@ namespace _Scripts
         {
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
-            // tilemapGenerator.Setup(gameObject, _valueGenerationSettings, _assetGenerationSettings);
             tilemapGenerator.Setup();
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
                 mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
-            
-            // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
-            
+
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
@@ -82,14 +73,11 @@ namespace _Scripts
         
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
-            // tilemapGenerator.Setup(gameObject, _valueGenerationSettings, _assetGenerationSettings);
             tilemapGenerator.Setup();
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
                 mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
-            
-            // Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, _valueGenerationSettings, _assetGenerationSettings);
             
             // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);

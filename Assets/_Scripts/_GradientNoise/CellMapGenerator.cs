@@ -76,7 +76,7 @@ namespace _Scripts._GradientNoise
             foreach (var cell in _indoorCells)
             {
                 // All indoor cells are cave
-                cell.Biom = Biom.Cave;
+                cell.Biom = Biom.Mountain;
 
                 // Can be generated with Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
@@ -87,7 +87,7 @@ namespace _Scripts._GradientNoise
                 }
                 else
                 {
-                    cell.Asset = new CellAsset(CellAsset.AssetType.Cavity);
+                    cell.Asset = new CellAsset(CellAsset.AssetType.Cave);
 
                     var value = prng.Next(101);
                     var stone = mountainLayerSettings.stonePercentage;
@@ -95,6 +95,43 @@ namespace _Scripts._GradientNoise
                     if (value <= stone)
                     {
                         cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                    }
+                }
+            }
+            
+            // Generate walls
+            // Get the values of the neighbours
+            // If one or more neighbours are different from the current cell, make the current cell a wall
+            foreach (var cell in _indoorCells)
+            {
+                // Get the coordinates of all 8 neighbours
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        int xPos = cell.CellIndex.x + x;
+                        int yPos = cell.CellIndex.y + y;
+
+                        // Skip the incoming cell, and cell coordinates that are not in the map
+                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
+                            xPos >= resolution.x || yPos >= resolution.y)
+                        {
+                            continue;
+                        }
+
+                        var neighbourVal = _cellMap[xPos, yPos].Indoors;
+                        var neighbourAsset = _cellMap[xPos, yPos].Asset;
+
+                        if (neighbourVal == false)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
+                        }
+
+                        if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
+                            neighbourAsset.Type is CellAsset.AssetType.Cave or CellAsset.AssetType.Stone)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
+                        }
                     }
                 }
             }
@@ -177,43 +214,6 @@ namespace _Scripts._GradientNoise
                 }
             }
 
-            // Generate walls
-            // Get the values of the neighbours
-            // If one or more neighbours are different from the current cell, make the current cell a wall
-            foreach (var cell in _indoorCells)
-            {
-                // Get the coordinates of all 8 neighbours
-                for (int x = -1; x <= 1; x++)
-                {
-                    for (int y = -1; y <= 1; y++)
-                    {
-                        int xPos = cell.CellIndex.x + x;
-                        int yPos = cell.CellIndex.y + y;
-
-                        // Skip the incoming cell, and cell coordinates that are not in the map
-                        if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
-                            xPos >= resolution.x || yPos >= resolution.y)
-                        {
-                            continue;
-                        }
-
-                        var neighbourVal = _cellMap[xPos, yPos].Indoors;
-                        var neighbourAsset = _cellMap[xPos, yPos].Asset;
-
-                        if (neighbourVal == false)
-                        {
-                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
-                        }
-
-                        if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
-                            neighbourAsset.Type is CellAsset.AssetType.Cavity or CellAsset.AssetType.Stone)
-                        {
-                            cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
-                        }
-                    }
-                }
-            }
-
             // Water layer generation
             foreach (var cell in _cellMap)
             {
@@ -239,7 +239,7 @@ namespace _Scripts._GradientNoise
                     }
                 }
 
-                if (cell.Asset.Type == CellAsset.AssetType.Cavity)
+                if (cell.Asset.Type == CellAsset.AssetType.Cave)
                 {
                     // Can be generated with Open Simplex Noise, Perlin Noise
                     var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, waterLayerSettings);

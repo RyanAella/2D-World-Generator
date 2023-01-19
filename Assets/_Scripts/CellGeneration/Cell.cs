@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Scripts.ScriptableObjects;
+using _Scripts.ScriptableObjects.TilePalettes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,7 +11,7 @@ namespace _Scripts.CellGeneration
      */
     public enum Biom
     {
-        Cave, // Default
+        Mountain, // Default
         Meadows,
         Woods
     }
@@ -31,7 +32,7 @@ namespace _Scripts.CellGeneration
         {
             None,
             MassiveRock,
-            Cavity,
+            Cave,
             Wall,
             Tree,
             Bush, 
@@ -57,7 +58,7 @@ namespace _Scripts.CellGeneration
                     // Interactable = false;
                     // CollidableInteractable = true;
                     break;
-                case AssetType.Cavity:
+                case AssetType.Cave:
                     Type = type;
                     // Collidable = false;
                     // Interactable = false;
@@ -163,7 +164,7 @@ namespace _Scripts.CellGeneration
         public void GenerateTiles(Dictionary<string, TilePaletteScriptableObject> tilePalette)
         {
             // Get the list of tiles from the dictionary
-            var cave = tilePalette["Cave"].tiles;
+            var mountain = tilePalette["Mountain"].tiles;
             var woods = tilePalette["Woods"].tiles;
             var meadows = tilePalette["Meadows"].tiles;
             var massiveRock = tilePalette["MassiveRock"].tiles;
@@ -175,7 +176,7 @@ namespace _Scripts.CellGeneration
             var water = tilePalette["Water"].tiles;
         
             // Load the tiles randomly from the list
-            var prngCave = _prng.Next(cave.Count);
+            var prngMountain = _prng.Next(mountain.Count);
             var prngWoods = _prng.Next(woods.Count);
             var prngMeadows = _prng.Next(meadows.Count);
             var prngRock = _prng.Next(massiveRock.Count);
@@ -189,8 +190,8 @@ namespace _Scripts.CellGeneration
             // Add the Biom tile to a dictionary
             switch (Biom)
             {
-                case Biom.Cave:
-                    Tiles.Add(TilemapTypes.BiomLayer, cave[prngCave]);
+                case Biom.Mountain:
+                    Tiles.Add(TilemapTypes.BiomLayer, mountain[prngMountain]);
                     break;
                 case Biom.Meadows:
                     Tiles.Add(TilemapTypes.BiomLayer, meadows[prngMeadows]);
@@ -206,7 +207,7 @@ namespace _Scripts.CellGeneration
                 case CellAsset.AssetType.MassiveRock:
                     Tiles.Add(TilemapTypes.MassiveRockLayer, massiveRock[prngRock]);
                     break;
-                case CellAsset.AssetType.Cavity:
+                case CellAsset.AssetType.Cave:
                     break;
                 case CellAsset.AssetType.Wall:
                     Tiles.Add(TilemapTypes.WallLayer, wall[prngWall]);
