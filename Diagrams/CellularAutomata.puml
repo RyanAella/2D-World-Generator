@@ -1,0 +1,43 @@
+﻿@startuml Indoor/Outdor Zustandsautomat
+hide empty description
+
+state "1"
+state "0"
+
+note "All state transitions are the \nnumber of neighbors with value 1" as n1
+
+1 --> 0 : < 4
+0 --> 1 : > 4
+1 --> 1 : >= 4
+0 --> 0 : <= 4
+
+@enduml
+
+@startuml Ablauf Zellulärer Automat - Generierung
+
+(*) --> "create CellMap"
+"create CellMap" --> "For each cell determine if indoor"
+"For each cell determine if indoor" --> "Apply Rules"
+"Apply Rules" --> "Determine the biome for each cell"
+if "wanted" then
+  ->[Yes] "Apply Biome Rules"
+else
+  -->[No] "Determine the asset for each cell"
+"Apply Biome Rules" --> "Determine the asset for each cell"
+if "wanted" then
+  ->[Yes] "Apply Asset Rules"
+else
+  -->[No] (*)     
+"Apply Asset Rules" --> (*)    
+
+@enduml
+
+@startuml Ablauf Gradient Noise - Generierung
+
+(*) --> "create CellMap"
+--> "For each cell determine if indoor"
+--> "Determine the biome for each cell"
+--> "Determine the asset for each cell"
+--> (*)                 
+
+@enduml

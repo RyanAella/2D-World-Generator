@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1917aecfb7c999944ac0ef0a576e9d28, type: 3}
+  m_Name: MeadowsScriptableObject
+  m_EditorClassIdentifier: 
+  tiles:
+  - {fileID: 11400000, guid: befa16a2fabf8344aaa36276abd3852d, type: 2}

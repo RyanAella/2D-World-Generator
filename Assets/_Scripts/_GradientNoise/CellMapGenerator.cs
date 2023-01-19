@@ -13,9 +13,10 @@ namespace _Scripts._GradientNoise
     public class AssetGenerationSettings
     {
         // trees, bushes
-        [Range(1, 100)] public int treePercentage;
-        [Range(1, 100)] public int bushPercentage;
-        [Range(1, 100)] public int grassPercentage;
+        [Range(1, 100)] public int treePercentage = 50;
+        [Range(1, 100)] public int bushPercentage = 30;
+        [Range(1, 100)] public int grassPercentage = 10;
+        [Range(1, 100)] public int stonePercentage = 10;
     }
 
     /**
@@ -30,9 +31,14 @@ namespace _Scripts._GradientNoise
         private List<Cell> _indoorCells;
         private List<Cell> _outdoorCells;
 
+        /**
+         * Generate a CellMap with the given settings.
+         */
         public Cell[,] GenerateCellMap(Vector2Int resolution, ValueGenerationSettings baseLayerSettings,
-            ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSetting,
-            AssetGenerationSettings assetGenerationSettings)
+                ValueGenerationSettings mountainLayerSettings, ValueGenerationSettings outdoorBiomSetting,
+                ValueGenerationSettings waterLayerSettings, AssetGenerationSettings meadowsAssetSettings,
+                AssetGenerationSettings woodsAssetSettings)
+            // public Cell[,] GenerateCellMap(Vector2Int resolution,  List<ValueGenerationSettings> valueGenerationSettings, AssetGenerationSettings assetGenerationSettings2)
         {
             _cellMap = new Cell[resolution.x, resolution.y];
             _indoorCells = new List<Cell>();
@@ -66,64 +72,39 @@ namespace _Scripts._GradientNoise
                 }
             }
 
-            // mountain layer generation
+            // Mountain layer generation
             foreach (var cell in _indoorCells)
             {
-                // all indoor cells are cave
-                cell.Biom = Biom.Cave;
+                // All indoor cells are cave
+                cell.Biom = Biom.Mountain;
 
                 // Can be generated with Open Simplex Noise, Perlin Noise
                 var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, mountainLayerSettings);
 
-                cell.Asset = val == 1
-                    ? new CellAsset(CellAsset.AssetType.MassiveRock)
-                    : new CellAsset(CellAsset.AssetType.Cavity);
-            }
-
-            // open terrain layer generation
-            foreach (var cell in _outdoorCells)
-            {
-                // Can be generated with Open Simplex Noise, Perlin Noise
-                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
-
                 if (val == 1)
                 {
-                    // cell is Meadows
-                    cell.Biom = Biom.Meadows;
+                    cell.Asset = new CellAsset(CellAsset.AssetType.MassiveRock);
                 }
                 else
                 {
-                    // cell is Woods
-                    cell.Biom = Biom.Woods;
+                    cell.Asset = new CellAsset(CellAsset.AssetType.Cave);
 
                     var value = prng.Next(101);
-                    var trees = assetGenerationSettings.treePercentage;
-                    var bushes = assetGenerationSettings.bushPercentage;
-                    var gras = assetGenerationSettings.grassPercentage;
+                    var stone = mountainLayerSettings.stonePercentage;
 
-                    if (trees + bushes + gras > 100)
+                    if (value <= stone)
                     {
-                        Debug.LogError("More than 100% Assets.");
-                    }
-                    else
-                    {
-                        if (value <= trees)
-                        {
-                            cell.Asset = new CellAsset(CellAsset.AssetType.Tree);
-                        }
-                        else if (value <= trees + bushes)
-                        {
-                            cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
-                        }
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
                     }
                 }
             }
-
+            
+            // Generate walls
             // Get the values of the neighbours
             // If one or more neighbours are different from the current cell, make the current cell a wall
             foreach (var cell in _indoorCells)
             {
-                // get the coordinates of all 8 neighbours
+                // Get the coordinates of all 8 neighbours
                 for (int x = -1; x <= 1; x++)
                 {
                     for (int y = -1; y <= 1; y++)
@@ -131,7 +112,7 @@ namespace _Scripts._GradientNoise
                         int xPos = cell.CellIndex.x + x;
                         int yPos = cell.CellIndex.y + y;
 
-                        // skip the incoming cell, and cell coordinates that are not in the map
+                        // Skip the incoming cell, and cell coordinates that are not in the map
                         if ((xPos == cell.CellIndex.x && yPos == cell.CellIndex.y) || xPos < 0 || yPos < 0 ||
                             xPos >= resolution.x || yPos >= resolution.y)
                         {
@@ -147,10 +128,125 @@ namespace _Scripts._GradientNoise
                         }
 
                         if (cell.Asset.Type == CellAsset.AssetType.MassiveRock &&
-                            neighbourAsset.Type == CellAsset.AssetType.Cavity)
+                            neighbourAsset.Type is CellAsset.AssetType.Cave or CellAsset.AssetType.Stone)
                         {
                             cell.Asset = new CellAsset(CellAsset.AssetType.Wall);
                         }
+                    }
+                }
+            }
+
+            // Open terrain layer generation
+            foreach (var cell in _outdoorCells)
+            {
+                // Can be generated with Open Simplex Noise, Perlin Noise
+                var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, outdoorBiomSetting);
+
+                if (val == 1)
+                {
+                    // Cell is Meadows
+                    cell.Biom = Biom.Meadows;
+
+                    var value = prng.Next(101);
+                    var trees = meadowsAssetSettings.treePercentage;
+                    var bushes = meadowsAssetSettings.bushPercentage;
+                    var grass = meadowsAssetSettings.grassPercentage;
+                    var stone = meadowsAssetSettings.stonePercentage;
+
+                    if (trees + bushes + grass + stone > 100)
+                    {
+                        Debug.LogError("More than 100% Assets.");
+                    }
+                    else
+                    {
+                        if (value <= trees)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Tree);
+                        }
+                        else if (value <= trees + bushes)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
+                        }
+                        else if (value <= trees + bushes + grass)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Grass);
+                        }
+                        else if (value <= trees + bushes + grass + stone)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                        }
+                    }
+                }
+                else
+                {
+                    // cell is Woods
+                    cell.Biom = Biom.Woods;
+
+                    var value = prng.Next(101);
+                    var trees = woodsAssetSettings.treePercentage;
+                    var bushes = woodsAssetSettings.bushPercentage;
+                    var grass = woodsAssetSettings.grassPercentage;
+                    var stone = woodsAssetSettings.stonePercentage;
+
+                    if (trees + bushes + grass + stone > 100)
+                    {
+                        Debug.LogError("More than 100% Assets.");
+                    }
+                    else
+                    {
+                        if (value <= trees)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Tree);
+                        }
+                        else if (value <= trees + bushes)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Bush);
+                        }
+                        else if (value <= trees + bushes + grass)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Grass);
+                        }
+                        else if (value <= trees + bushes + grass + stone)
+                        {
+                            cell.Asset = new CellAsset(CellAsset.AssetType.Stone);
+                        }
+                    }
+                }
+            }
+
+            // Water layer generation
+            foreach (var cell in _cellMap)
+            {
+                if (cell.Biom == Biom.Meadows)
+                {
+                    // Can be generated with Open Simplex Noise, Perlin Noise
+                    var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, waterLayerSettings);
+
+                    if (val == 1)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
+                    }
+                }
+
+                if (cell.Biom == Biom.Woods)
+                {
+                    // Can be generated with Open Simplex Noise, Perlin Noise
+                    var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, waterLayerSettings);
+
+                    if (val == 1)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
+                    }
+                }
+
+                if (cell.Asset.Type == CellAsset.AssetType.Cave)
+                {
+                    // Can be generated with Open Simplex Noise, Perlin Noise
+                    var val = ValueGenerator.Evaluate(cell.CellIndex.x, cell.CellIndex.y, waterLayerSettings);
+
+                    if (val == 1)
+                    {
+                        cell.Asset = new CellAsset(CellAsset.AssetType.Water);
                     }
                 }
             }

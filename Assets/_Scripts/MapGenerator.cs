@@ -1,7 +1,7 @@
 using _Scripts._GradientNoise;
-using _Scripts._GradientNoise.TilemapGeneration;
 using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.TilemapGeneration;
 using UnityEngine;
 
 namespace _Scripts
@@ -12,23 +12,34 @@ namespace _Scripts
      */
     public class MapGenerator : MonoBehaviour
     {
-        //resolution default 16:9
+        // Resolution: default 16:9
         [SerializeField] private Vector2Int resolution = new(128, 72);
 
+        // Script access
         private CellMapGenerator _cellMapGenerator;
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
-        // Settings for the layer determining if a tile is in or outdoors
+        // Settings for the base layer determining if a tile is in or outdoors
+        [Tooltip("What percentage is indoors.")]
         [SerializeField] private ValueGenerationSettings baseLayerSettings;
-
+        
         // Settings for determining if an indoor tile is massive rock or a cavity
+        [Tooltip("What percentage is massive rock.")]
         [SerializeField] private ValueGenerationSettings mountainLayerSettings;
-
+        
         // Settings for determining if an outdoor tile is meadows or woods
+        [Tooltip("What percentage is meadows.")]
         [SerializeField] private ValueGenerationSettings outdoorBiomSettings;
         
+        // Settings for determining if a meadows tile is water
+        [Tooltip("What percentage is water.")]
+        [SerializeField] private ValueGenerationSettings waterLayerSettings;
+        
+        // Settings for determining how many percent of meadows are trees, bushes and gras
+        [SerializeField] private AssetGenerationSettings meadowsAssetSettings;
+        
         // Settings for determining how many percent of woods are trees, bushes and gras
-        [SerializeField] private AssetGenerationSettings assetGenerationSettings;
+        [SerializeField] private AssetGenerationSettings woodsAssetSettings;
 
         // For the use of OnValidate()
         private bool _scriptLoaded = false;
@@ -38,15 +49,15 @@ namespace _Scripts
 
         void Start()
         {
-            // initialization
+            // Initialization
             _cellMapGenerator = new CellMapGenerator();
             tilemapGenerator.Setup();
 
-            // cell map generation
+            // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
-                mountainLayerSettings, outdoorBiomSettings, assetGenerationSettings);
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
 
-            // tilemap generation
+            // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
             // For Debugging
@@ -59,16 +70,16 @@ namespace _Scripts
         private void OnValidate()
         {
             if (!_scriptLoaded) return;
-
-            // initialization
+        
+            // Initialization
             _cellMapGenerator = new CellMapGenerator();
             tilemapGenerator.Setup();
 
-            // cell map generation
-            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings, mountainLayerSettings,
-                outdoorBiomSettings, assetGenerationSettings);
-
-            // tilemap generation
+            // Cell map generation
+            Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
+                mountainLayerSettings, outdoorBiomSettings, waterLayerSettings, meadowsAssetSettings, woodsAssetSettings);
+            
+            // Tilemap generation
             tilemapGenerator.GenerateTilemap(cellMap);
 
             // For Debugging

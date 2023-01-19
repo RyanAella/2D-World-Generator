@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 namespace _Scripts.CellGeneration
 {
     /*
-     * This class shows the value of a cell and its neighbouring cells
+     * This class shows the value of a cell and its neighbouring cells.
      */
     public class CellDebugger
     {
@@ -21,6 +21,7 @@ namespace _Scripts.CellGeneration
             Different,
         }
 
+        // Constructor
         public CellDebugger(GameObject root)
         {
             if (root.GetComponent(typeof(Grid)) as Grid == null)
@@ -34,7 +35,7 @@ namespace _Scripts.CellGeneration
         }
 
         /*
-         * Plot the cell and its neighbours
+         * Plot the cell and its neighbours.
          */
         public void PlotNeighbours(Cell cell)
         {
@@ -55,19 +56,21 @@ namespace _Scripts.CellGeneration
         }
 
         /*
-         * Draw the needed tile
+         * Draw the needed tile.
          */
         private void DrawTile(int xPos, int yPos, CellType type)
         {
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
 
-            // create texture and rect for Sprite
+            // Create texture and rect for Sprite
             Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, -1, true);
             texture.wrapMode = TextureWrapMode.Clamp;
             texture.filterMode = FilterMode.Point;
             Rect rect = new Rect(0, 0, 1, 1);
 
             // create Sprite
+            if (tempTile == null) return;
+            
             tempTile.sprite = Sprite.Create(texture, rect, Vector2.up, PixelPerUnit);
 
             var color = Color.clear;
@@ -92,11 +95,12 @@ namespace _Scripts.CellGeneration
         }
 
         /*
-         * Draw the needed tile
+         * Draw the needed tile.
          */
         private void DrawTile(Vector2Int cellPos, CellType type)
         {
             Tile tempTile = ScriptableObject.CreateInstance(typeof(Tile)) as Tile;
+            
             // create texture and rect for Sprite
             Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, -1, true);
             texture.wrapMode = TextureWrapMode.Clamp;
@@ -104,6 +108,8 @@ namespace _Scripts.CellGeneration
             Rect rect = new Rect(0, 0, 1, 1);
 
             // create Sprite
+            if (tempTile == null) return;
+            
             tempTile.sprite = Sprite.Create(texture, rect, Vector2.up, PixelPerUnit);
 
             var color = Color.clear;

@@ -1,6 +1,41 @@
 ﻿# Changelog
 
 
+## [1.4.0] - 2023-01-11
+## Added
+- Generation of water tiles for Pseudo Random
+- Generation of grass (for meadows and woods) and stones (for meadows, woods and cavity)
+
+
+## [1.3.0] - 2023-01-09
+## Added
+- Generation of water tiles for gradient noise
+
+## Changed
+- Minor changes in the Pseudo Random generation process
+
+
+## [1.2.1] - 2023-01-03
+## Changed
+- Added new bushes to TilePalette Bush
+
+## Fixes
+- Wrong Pixels Per Unit for Meadows and Woods Tiles
+- Wrong Pivets for Tree Sprites
+
+
+## [1.1.0] - 2023-01-01
+## Added
+- ScriptableObjects with List<Tile> for each AssetType and the Bioms
+
+
+## [1.0.1] - 2022-12-30
+[RELEASE]
+
+## Changed
+- Minor Typos
+
+
 ## [0.10.1] - 2022-12-28
 ## Added
 - Entire generation process in Pseudo Random
