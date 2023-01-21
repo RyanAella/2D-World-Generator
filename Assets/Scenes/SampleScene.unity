@@ -438,7 +438,6 @@ GameObject:
   - component: {fileID: 612147450}
   - component: {fileID: 612147453}
   - component: {fileID: 612147452}
-  - component: {fileID: 612147451}
   m_Layer: 0
   m_Name: Open Simplex Noise
   m_TagString: Untagged
@@ -461,20 +460,6 @@ Transform:
   m_Father: {fileID: 51378194}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &612147451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 612147449}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c148d361bcc68cc48b9518c24884d2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resolution: {x: 256, y: 144}
-  dirt: {fileID: 503605128180604871, guid: 1cbd709019fa222439cb77d12f670056, type: 3}
 --- !u!114 &612147452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,7 +543,6 @@ GameObject:
   - component: {fileID: 647153681}
   - component: {fileID: 647153684}
   - component: {fileID: 647153682}
-  - component: {fileID: 647153685}
   m_Layer: 0
   m_Name: Pseudo Random
   m_TagString: Untagged
@@ -653,20 +637,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &647153685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 647153680}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c148d361bcc68cc48b9518c24884d2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resolution: {x: 256, y: 144}
-  dirt: {fileID: 503605128180604871, guid: 1cbd709019fa222439cb77d12f670056, type: 3}
 --- !u!1 &780495895
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,7 +648,6 @@ GameObject:
   - component: {fileID: 780495896}
   - component: {fileID: 780495899}
   - component: {fileID: 780495898}
-  - component: {fileID: 780495897}
   m_Layer: 0
   m_Name: Perlin Noise
   m_TagString: Untagged
@@ -701,20 +670,6 @@ Transform:
   m_Father: {fileID: 51378194}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &780495897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 780495895}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c148d361bcc68cc48b9518c24884d2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resolution: {x: 256, y: 144}
-  dirt: {fileID: 503605128180604871, guid: 1cbd709019fa222439cb77d12f670056, type: 3}
 --- !u!114 &780495898
 MonoBehaviour:
   m_ObjectHideFlags: 0
