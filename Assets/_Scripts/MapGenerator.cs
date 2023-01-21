@@ -1,6 +1,7 @@
 using _Scripts._GradientNoise;
-using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.ScriptableObjects.AssetGenerationSettings;
+using _Scripts.ScriptableObjects.ValueGenerationSettings;
 using _Scripts.TilemapGeneration;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ namespace _Scripts
         private CellMapGenerator _cellMapGenerator;
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
+        [Header("Settings for each Layer/Tilemap")]
         // Settings for the base layer determining if a tile is in or outdoors
         [Tooltip("What percentage is indoors.")]
         [SerializeField] private ValueGenerationSettings baseLayerSettings;
@@ -35,6 +37,7 @@ namespace _Scripts
         [Tooltip("What percentage is water.")]
         [SerializeField] private ValueGenerationSettings waterLayerSettings;
         
+        [Header("Settings for Meadows/Woods Assets")]
         // Settings for determining how many percent of meadows are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings meadowsAssetSettings;
         
@@ -42,7 +45,7 @@ namespace _Scripts
         [SerializeField] private AssetGenerationSettings woodsAssetSettings;
 
         // For the use of OnValidate()
-        private bool _scriptLoaded = false;
+        private bool _scriptLoaded;
 
         // For Debugging
         // private CellDebugger _debugger;
@@ -51,7 +54,7 @@ namespace _Scripts
         {
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
-            tilemapGenerator.Setup();
+            tilemapGenerator.Setup(gameObject);
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,
@@ -73,7 +76,7 @@ namespace _Scripts
         
             // Initialization
             _cellMapGenerator = new CellMapGenerator();
-            tilemapGenerator.Setup();
+            tilemapGenerator.Setup(gameObject);
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGenerator.GenerateCellMap(resolution, baseLayerSettings,

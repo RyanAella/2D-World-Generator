@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using _Scripts.ScriptableObjects;
 using _Scripts.ScriptableObjects.TilePalettes;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -131,8 +130,7 @@ namespace _Scripts.CellGeneration
         public enum TilemapTypes
         {
             BiomLayer,
-            MassiveRockLayer,
-            WallLayer,
+            MountainLayer,
             TreeLayer,
             BushLayer,
             GrassLayer,
@@ -205,12 +203,12 @@ namespace _Scripts.CellGeneration
             switch (Asset.Type)
             {
                 case CellAsset.AssetType.MassiveRock:
-                    Tiles.Add(TilemapTypes.MassiveRockLayer, massiveRock[prngRock]);
+                    Tiles.Add(TilemapTypes.MountainLayer, massiveRock[prngRock]);
                     break;
                 case CellAsset.AssetType.Cave:
                     break;
                 case CellAsset.AssetType.Wall:
-                    Tiles.Add(TilemapTypes.WallLayer, wall[prngWall]);
+                    Tiles.Add(TilemapTypes.MountainLayer, wall[prngWall]);
                     break;
                 case CellAsset.AssetType.Tree:
                     Tiles.Add(TilemapTypes.TreeLayer, tree[prngTree]);

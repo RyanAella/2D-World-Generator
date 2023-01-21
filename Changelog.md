@@ -1,6 +1,13 @@
 ﻿# Changelog
 
 
+## [1.5.0] - 2023-01-21
+## Changed
+- ValueGenerationSettings, MapGenerationSettings and AssetGenerationSettings are now ScriptableObjects
+- Tilemaps as Prefabs
+- MassiveRock and Walls are now on one Tilemap
+
+
 ## [1.4.0] - 2023-01-11
 ## Added
 - Generation of water tiles for Pseudo Random

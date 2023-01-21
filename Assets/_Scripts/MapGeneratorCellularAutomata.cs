@@ -1,5 +1,7 @@
-using _Scripts._PseudoRandom;
+using _Scripts._CellularAutomata;
 using _Scripts.CellGeneration;
+using _Scripts.ScriptableObjects.AssetGenerationSettings;
+using _Scripts.ScriptableObjects.MapGenerationSettings;
 using _Scripts.TilemapGeneration;
 using UnityEngine;
 
@@ -9,7 +11,7 @@ namespace _Scripts
      * This class controls the entire generation process.
      * All required parameters are collected in it and passed to the corresponding methods.
      */
-    public class MapGeneratorPseudoRandom : MonoBehaviour
+    public class MapGeneratorCellularAutomata : MonoBehaviour
     {
         // Resolution: default 16:9
         [SerializeField] private Vector2Int resolution = new(128, 72);
@@ -18,6 +20,7 @@ namespace _Scripts
         private CellMapGeneratorPseudoRandom _cellMapGeneratorPseudoRandom;
         [SerializeField] private TilemapGenerator tilemapGenerator;
 
+        [Header("Settings for each Layer/Tilemap")]
         // Settings for the base layer determining if a tile is in or outdoors
         [Tooltip("What percentage is indoors.")]
         [SerializeField] private MapGenerationSettings baseLayerSettings;
@@ -34,6 +37,7 @@ namespace _Scripts
         [Tooltip("What percentage is water.")]
         [SerializeField] private MapGenerationSettings waterLayerSettings;
 
+        [Header("Settings for Meadows/Woods Assets")]
         // Settings for determining how many percent of meadows are trees, bushes and gras
         [SerializeField] private AssetGenerationSettings meadowsAssetSettings;
         
@@ -50,7 +54,7 @@ namespace _Scripts
         {
             // Initialization
             _cellMapGeneratorPseudoRandom = new CellMapGeneratorPseudoRandom();
-            tilemapGenerator.Setup();
+            tilemapGenerator.Setup(gameObject);
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,
@@ -72,7 +76,7 @@ namespace _Scripts
 
             // Initialization
             _cellMapGeneratorPseudoRandom = new CellMapGeneratorPseudoRandom();
-            tilemapGenerator.Setup();
+            tilemapGenerator.Setup(gameObject);
 
             // Cell map generation
             Cell[,] cellMap = _cellMapGeneratorPseudoRandom.GenerateCellMap(resolution, baseLayerSettings,

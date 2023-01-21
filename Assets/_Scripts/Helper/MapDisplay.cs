@@ -7,16 +7,13 @@ namespace _Scripts.Helper
      */
     public class MapDisplay
     {
-        private GameObject _root;
         private static Texture2D _texture;
-        private static Rect _rect;
         private static SpriteRenderer _renderer;
 
         // Constructor
         public MapDisplay(Vector3 position, Vector2Int resolution, GameObject root)
         {
             // Set properties
-            _root = root;
 
             // Create texture and rect for Sprite
             _texture = new Texture2D(resolution.x, resolution.y, TextureFormat.RGBA32, -1, true);
@@ -24,7 +21,7 @@ namespace _Scripts.Helper
             
             // FilterMode.Point to get checkerboard pattern
             _texture.filterMode = FilterMode.Point;
-            _rect = new Rect(0, 0, resolution.x, resolution.y);
+            var rect = new Rect(0, 0, resolution.x, resolution.y);
 
             for (int x = 0; x < resolution.x; x++)
             {
@@ -38,10 +35,10 @@ namespace _Scripts.Helper
             _texture.Apply();
 
             // Create Sprite
-            var sprite = Sprite.Create(_texture, _rect, Vector2.up);
+            var sprite = Sprite.Create(_texture, rect, Vector2.up);
 
             // Add Sprite to SpriteRenderer on root
-            _renderer = _root.GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
+            _renderer = root.GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
             if (_renderer == null)
             {
                 Debug.LogError("SpriteRenderer is missing.");
