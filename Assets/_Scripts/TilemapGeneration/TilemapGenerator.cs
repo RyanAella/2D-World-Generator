@@ -13,36 +13,40 @@ namespace _Scripts.TilemapGeneration
     [Serializable]
     public class TilemapGenerator
     {
+        [Header("Layer Prefabs")]
         // Floor base level tilemap showing biom color
-        [SerializeField] private GameObject biomLayer;
+        [SerializeField] private GameObject biomLayerPrefab;
+        private GameObject _biomLayer;
         private Tilemap _biomTilemap;
         
-        // Tilemap containing massive rock
-        [SerializeField] private GameObject massiveRockLayer; 
-        private Tilemap _massiveRockTilemap;
-        
-        // Tilemap containing walls
-        [SerializeField] private GameObject wallLayer; 
-        private Tilemap _wallTilemap;
-        
+        // Tilemap containing massive rock and walls
+        [SerializeField] private GameObject mountainLayerPrefab;
+        private GameObject _mountainLayer;
+        private Tilemap _mountainTilemap;
+
         // Tilemap containing trees
-        [SerializeField] private GameObject treeLayer; 
+        [SerializeField] private GameObject treeLayerPrefab;
+        private GameObject _treeLayer;
         private Tilemap _treeTilemap;
         
         // Tilemap containing bushes
-        [SerializeField] private GameObject bushLayer; 
+        [SerializeField] private GameObject bushLayerPrefab;
+        private GameObject _bushLayer;
         private Tilemap _bushTilemap;
         
         // Tilemap containing grass
-        [SerializeField] private GameObject grassLayer; 
+        [SerializeField] private GameObject grassLayerPrefab;
+        private GameObject _grassLayer;
         private Tilemap _grassTilemap;
         
         // Tilemap containing stones
-        [SerializeField] private GameObject stoneLayer; 
+        [SerializeField] private GameObject stoneLayerPrefab;
+        private GameObject _stoneLayer;
         private Tilemap _stoneTilemap;
         
         // Tilemap containing water
-        [SerializeField] private GameObject waterLayer; 
+        [SerializeField] private GameObject waterLayerPrefab;
+        private GameObject _waterLayer;
         private Tilemap _waterTilemap;
         
         // List containing all GameObjects
@@ -52,51 +56,57 @@ namespace _Scripts.TilemapGeneration
         private List<Tilemap> _tilemaps;
 
         // ScriptableObject lists containing the tiles for each tilemap
-        [SerializeField] public TilePaletteScriptableObject mountainScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject meadowsScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject woodsScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject massiveRockScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject wallScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject treeScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject bushScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject grassScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject stoneScriptableObject;
-        [SerializeField] public TilePaletteScriptableObject waterScriptableObject;
+        [Header("TilePalettes (ScriptableObjects)")]
+        [SerializeField] public TilePaletteScriptableObject mountainPalette;
+        [SerializeField] public TilePaletteScriptableObject meadowsPalette;
+        [SerializeField] public TilePaletteScriptableObject woodsPalette;
+        [SerializeField] public TilePaletteScriptableObject massiveRockPalette;
+        [SerializeField] public TilePaletteScriptableObject wallPalette;
+        [SerializeField] public TilePaletteScriptableObject treePalette;
+        [SerializeField] public TilePaletteScriptableObject bushPalette;
+        [SerializeField] public TilePaletteScriptableObject grassPalette;
+        [SerializeField] public TilePaletteScriptableObject stonePalette;
+        [SerializeField] public TilePaletteScriptableObject waterPalette;
 
         // Dictionary containing all ScriptableObject lists
         private Dictionary<string, TilePaletteScriptableObject> _tilePalettes;
 
-        public void Setup()
+        public void Setup(GameObject tilemapParent)
         {
-            // Creating the Dictionary
+            _biomLayer = GameObject.Instantiate(biomLayerPrefab, tilemapParent.transform);
+            _mountainLayer = GameObject.Instantiate(mountainLayerPrefab, tilemapParent.transform);
+            _treeLayer = GameObject.Instantiate(treeLayerPrefab, tilemapParent.transform);
+            _bushLayer = GameObject.Instantiate(bushLayerPrefab, tilemapParent.transform);
+            _grassLayer = GameObject.Instantiate(grassLayerPrefab, tilemapParent.transform);
+            _stoneLayer = GameObject.Instantiate(stoneLayerPrefab, tilemapParent.transform);
+            _waterLayer = GameObject.Instantiate(waterLayerPrefab, tilemapParent.transform);
+            
+            // Creating the List
             _gameObjects = new List<GameObject>()
             {
-                biomLayer,
-                massiveRockLayer,
-                wallLayer,
-                treeLayer,
-                bushLayer,
-                grassLayer,
-                stoneLayer,
-                waterLayer
+                _biomLayer,
+                _mountainLayer,
+                _treeLayer,
+                _bushLayer,
+                _grassLayer,
+                _stoneLayer,
+                _waterLayer
             };
-            
+
             // Getting the tilemap components
-            _biomTilemap = biomLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _massiveRockTilemap = massiveRockLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _wallTilemap = wallLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _treeTilemap = treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _bushTilemap = bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _grassTilemap = grassLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _stoneTilemap = stoneLayer.GetComponent(typeof(Tilemap)) as Tilemap;
-            _waterTilemap = waterLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _biomTilemap = _biomLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _mountainTilemap = _mountainLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _treeTilemap = _treeLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _bushTilemap = _bushLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _grassTilemap = _grassLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _stoneTilemap = _stoneLayer.GetComponent(typeof(Tilemap)) as Tilemap;
+            _waterTilemap = _waterLayer.GetComponent(typeof(Tilemap)) as Tilemap;
             
-            // Creating the Dictionary
+            // Creating the List
             _tilemaps = new List<Tilemap>()
             {
                 _biomTilemap,
-                _massiveRockTilemap,
-                _wallTilemap,
+                _mountainTilemap,
                 _treeTilemap,
                 _bushTilemap,
                 _grassTilemap,
@@ -107,16 +117,16 @@ namespace _Scripts.TilemapGeneration
             // Creating the Dictionary
             _tilePalettes = new Dictionary<string, TilePaletteScriptableObject>
             {
-                { "Mountain", mountainScriptableObject },
-                { "Woods", woodsScriptableObject },
-                { "Meadows", meadowsScriptableObject },
-                { "MassiveRock", massiveRockScriptableObject },
-                { "Wall", wallScriptableObject },
-                { "Tree", treeScriptableObject },
-                { "Bush", bushScriptableObject },
-                { "Grass", grassScriptableObject },
-                { "Stone", stoneScriptableObject },
-                { "Water", waterScriptableObject}
+                { "Mountain", mountainPalette },
+                { "Woods", woodsPalette },
+                { "Meadows", meadowsPalette },
+                { "MassiveRock", massiveRockPalette },
+                { "Wall", wallPalette },
+                { "Tree", treePalette },
+                { "Bush", bushPalette },
+                { "Grass", grassPalette },
+                { "Stone", stonePalette },
+                { "Water", waterPalette}
             };
         }
 
@@ -144,12 +154,9 @@ namespace _Scripts.TilemapGeneration
                         case Cell.TilemapTypes.BiomLayer:
                             _biomTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
                             break;
-                        case Cell.TilemapTypes.MassiveRockLayer:
-                            _massiveRockTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0),
+                        case Cell.TilemapTypes.MountainLayer:
+                            _mountainTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0),
                                 tile.Value);
-                            break;
-                        case Cell.TilemapTypes.WallLayer:
-                            _wallTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);
                             break;
                         case Cell.TilemapTypes.TreeLayer:
                             _treeTilemap.SetTile(new Vector3Int(cell.CellIndex.x, cell.CellIndex.y, 0), tile.Value);

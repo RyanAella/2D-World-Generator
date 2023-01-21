@@ -1,24 +1,13 @@
-using System;
 using System.Collections.Generic;
 using _Scripts._GradientNoise.ValueGeneration;
 using _Scripts.CellGeneration;
+using _Scripts.ScriptableObjects;
+using _Scripts.ScriptableObjects.AssetGenerationSettings;
+using _Scripts.ScriptableObjects.ValueGenerationSettings;
 using UnityEngine;
 
 namespace _Scripts._GradientNoise
 {
-    /**
-     * This class stores the parameters for each generation step.
-     */
-    [Serializable] // With this it can be showed in the Inspector
-    public class AssetGenerationSettings
-    {
-        // trees, bushes
-        [Range(1, 100)] public int treePercentage = 50;
-        [Range(1, 100)] public int bushPercentage = 30;
-        [Range(1, 100)] public int grassPercentage = 10;
-        [Range(1, 100)] public int stonePercentage = 10;
-    }
-
     /**
      * This class generates the cell map.
      * First: The Base Layer (in-/outdoors).

@@ -30,7 +30,7 @@ namespace _Scripts.CellGeneration
                 return;
             }
 
-            _tilemap = GameObject.Instantiate(Resources.Load("Prefabs/CellDebugTilemap"), root.transform.position,
+            _tilemap = Object.Instantiate(Resources.Load("Prefabs/CellDebugTilemap"), root.transform.position,
                 Quaternion.identity, root.transform).GetComponent(typeof(Tilemap)) as Tilemap;
         }
 

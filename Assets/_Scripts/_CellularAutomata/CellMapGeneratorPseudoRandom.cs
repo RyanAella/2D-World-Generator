@@ -1,59 +1,11 @@
-using System;
 using System.Collections.Generic;
 using _Scripts.CellGeneration;
+using _Scripts.ScriptableObjects.AssetGenerationSettings;
+using _Scripts.ScriptableObjects.MapGenerationSettings;
 using UnityEngine;
 
-namespace _Scripts._PseudoRandom
+namespace _Scripts._CellularAutomata
 {
-    /**
-     * This class stores the parameters for each generation step.
-     */
-    [Serializable] // With this it can be shown in the Inspector
-    public class AssetGenerationSettings
-    {
-        // trees, bushes
-        [Range(1, 100)] public int treePercentage = 50;
-        [Range(1, 100)] public int bushPercentage = 30;
-        [Range(1, 100)] public int grassPercentage = 10;
-        [Range(1, 100)] public int stonePercentage = 10;
-    }
-
-    /**
-     * This class stores the parameters for each generation step.
-     */
-    [Serializable] // With this it can be shown in the Inspector
-    public class MapGenerationSettings
-    {
-        // General
-        [Header("General")] [Range(0, 100)] public int thresholdPercentage = 45;
-        [Range(0, 100)] public int similarNeighboursPercentage = 45;
-
-        // Seed
-        [Header("Seed")] public bool useRandomSeed = true;
-        private bool _seedLocked;
-        [SerializeField] private string seed = "Hello World!";
-
-        // Pseudo random settings
-        [Header("Pseudo Random")] public int smoothSteps = 7;
-
-        [Header("For Mountain Generation")] public int stonePercentage = 10;
-
-        // Seed can only be changed if there is no seed.
-        public void SetSeed(string inSeed)
-        {
-            if (!_seedLocked)
-            {
-                seed = inSeed;
-                _seedLocked = true;
-            }
-        }
-
-        public string GetSeed()
-        {
-            return seed;
-        }
-    }
-
     /**
      * This class generates the cell map.
      * First: The Base Layer (in-/outdoors).
